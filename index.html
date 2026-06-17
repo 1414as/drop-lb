@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سیستم گزارش‌دهی تولید - پویانوین</title>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Vazirmatn',Tahoma,sans-serif;background:#f0faf9;direction:rtl;font-size:12px}
+  .page{background:#fff;max-width:1400px;margin:16px auto;padding:16px;box-shadow:0 2px 14px rgba(0,0,0,0.12);border-radius:8px}
+
+  /* HEADER */
+  .header-table{width:100%;border-collapse:collapse;border:2px solid #0d9d91}
+  .header-table td{padding:8px;border:1px solid #0d9d91;vertical-align:middle}
+  .header-logo{width:120px;text-align:center;background:#fff}
+  .header-logo img{max-width:110px;max-height:70px}
+  .header-title{text-align:center;background:#0d9d91;color:#fff;font-size:16px;font-weight:700;padding:16px 8px!important;white-space:nowrap}
+  .header-code{width:110px;text-align:center;background:#fff;font-size:10px;font-weight:600;color:#333;white-space:nowrap}
+
+  /* INFO BAR */
+  .info-bar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 10px;padding:10px 12px;background:#edfbfa;border:1px solid #9ed8d4;border-radius:6px;align-items:center}
+  .info-group{display:flex;align-items:center;gap:4px}
+  .info-group label{font-weight:600;color:#0d8a7f;white-space:nowrap;font-size:11px}
+  .info-group select,.info-group input{border:1px solid #f9a84d;background:#fff8f0;border-radius:4px;padding:3px 6px;font-family:inherit;font-size:11px;color:#333}
+  .info-group select:focus,.info-group input:focus{outline:none;border-color:#0d9d91}
+
+  /* SAVE BAR */
+  .save-bar{display:flex;align-items:center;gap:8px;padding:5px 12px;background:#f0fdf9;border:1px solid #9ed8d4;border-radius:6px;margin-bottom:10px;font-size:11px;color:#0a7a6e}
+  .save-dot{width:9px;height:9px;border-radius:50%;background:#0d9d91;display:inline-block;transition:background .3s;flex-shrink:0}
+  .save-dot.saving{background:#f9a84d;animation:pulse .6s infinite}
+  .save-dot.error{background:#e05050}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .clear-btn{margin-right:auto;background:none;border:1px solid #f9a84d;color:#c0522a;border-radius:4px;padding:2px 10px;font-family:inherit;font-size:10px;cursor:pointer}
+  .clear-btn:hover{background:#fff3e0}
+
+  /* ENTRY FORM */
+  .entry-card{background:#f7fffe;border:2px solid #0d9d91;border-radius:8px;padding:14px 16px;margin-bottom:14px}
+  .entry-card h3{color:#0d9d91;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .entry-card h3 span.badge{background:#0d9d91;color:#fff;border-radius:12px;padding:2px 10px;font-size:11px}
+  .entry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:10px}
+  .entry-grid.wide .eg-full{grid-column:1/-1}
+  .eg{display:flex;flex-direction:column;gap:3px}
+  .eg label{font-size:10px;font-weight:600;color:#0a7a6e}
+  .eg select,.eg input,.eg textarea{border:1px solid #f9a84d;background:#fff8f0;border-radius:4px;padding:4px 7px;font-family:inherit;font-size:11px;color:#333;width:100%}
+  .eg select:focus,.eg input:focus,.eg textarea:focus{outline:none;border-color:#0d9d91;background:#fff}
+  .eg input[readonly]{background:#e0f7f4;color:#0a7a6e;font-weight:600;cursor:default;border-color:#9ed8d4}
+  .eg textarea{resize:vertical;min-height:60px}
+  .add-btn{background:#0d9d91;color:#fff;border:none;padding:8px 28px;border-radius:6px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s}
+  .add-btn:hover{background:#0a7a6e}
+  .skip-btn{background:#fff;color:#0d8a7f;border:1px solid #9ed8d4;padding:8px 18px;border-radius:6px;font-family:inherit;font-size:12px;cursor:pointer;margin-right:8px}
+  .skip-btn:hover{background:#edfbfa}
+  .line-info{font-size:11px;color:#0d8a7f;background:#edfbfa;border:1px solid #9ed8d4;border-radius:4px;padding:4px 10px;margin-bottom:8px}
+  .progress-bar-wrap{background:#e0f7f4;border-radius:6px;height:8px;margin-bottom:10px;overflow:hidden}
+  .progress-bar-fill{background:#0d9d91;height:100%;border-radius:6px;transition:width .4s}
+
+  /* RESULTS TABLE */
+  .result-section{margin-top:16px}
+  .result-section h3{color:#0d9d91;font-size:13px;font-weight:700;margin-bottom:8px;border-bottom:2px solid #9ed8d4;padding-bottom:4px}
+  .result-table-wrap{overflow-x:auto;border-radius:6px;border:1px solid #9ed8d4}
+  .result-table{width:100%;border-collapse:collapse;font-size:11px;min-width:900px}
+  .result-table th{background:#0d9d91;color:#fff;padding:6px 5px;text-align:center;border:1px solid #0a7a6e;font-weight:600;white-space:nowrap;position:sticky;top:0;z-index:5}
+  .result-table th.sub{background:#0a8a80}
+  .result-table td{border:1px solid #ddd;padding:4px 5px;vertical-align:top;white-space:pre-wrap;word-break:break-word}
+  .result-table tr:nth-child(even) td{background:#f7fffe}
+  .result-table tr:hover td{background:#edfbfa}
+  .result-table td.line-td{background:#d0f0ee;font-weight:700;color:#0a7a6e;text-align:center;font-size:10px}
+  .result-table td.del-td{text-align:center}
+  .stop-tag{display:inline-flex;align-items:center;gap:4px;background:#e8f5f3;border:1px solid #9ed8d4;color:#0a7a6e;border-radius:12px;padding:2px 7px;font-size:10px;font-weight:600}
+  .stop-tag button{background:none;border:none;color:#0a7a6e;cursor:pointer;font-size:12px;line-height:1;padding:0}
+  .del-row-btn{background:none;border:none;color:#e05050;cursor:pointer;font-size:14px;padding:2px 6px}
+  .del-row-btn:hover{color:#b00}
+
+  /* FOOTER */
+  .footer-section{margin-top:16px;padding:12px;background:#f4fdfc;border:1px solid #9ed8d4;border-radius:6px}
+  .footer-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .footer-group{display:flex;align-items:center;gap:6px}
+  .footer-group label{font-weight:600;color:#0d8a7f;white-space:nowrap;font-size:11px}
+  .footer-group input{border:1px solid #f9a84d;background:#fff8f0;border-radius:4px;padding:4px 8px;font-family:inherit;font-size:11px;min-width:160px}
+  .footer-group input:focus{outline:none;border-color:#0d9d91}
+  .absent-tag{display:inline-flex;align-items:center;gap:5px;background:#fdecea;border:1px solid #f0c4bb;color:#c0392b;border-radius:14px;padding:2px 8px;font-size:11px}
+  .absent-tag button{background:none;border:none;color:#c0392b;cursor:pointer;font-size:13px;line-height:1;padding:0}
+  .confirm-section{margin-top:10px;padding:12px 16px;background:#fff8f0;border:2px solid #f9a84d;border-radius:8px}
+  .confirm-text{font-size:13px;color:#333;margin-bottom:8px;line-height:1.8}
+  .confirm-text strong{color:#0d9d91}
+  .confirm-check{display:flex;align-items:center;gap:10px}
+  .confirm-check input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:#0d9d91}
+  .confirm-check label{font-weight:600;font-size:13px;color:#333;cursor:pointer}
+  .export-btn{display:block;margin:14px auto 0;background:#0d9d91;color:#fff;border:none;padding:10px 40px;font-family:inherit;font-size:14px;font-weight:700;border-radius:8px;cursor:pointer;transition:background .2s}
+  .export-btn:hover{background:#0a7a6e}
+  .export-btn:disabled{background:#aaa;cursor:not-allowed}
+  .rows-count{font-size:11px;color:#0a7a6e;margin-bottom:6px;font-weight:600}
+
+/* ─── LOGBOOK styles ─── */
+
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Vazirmatn',Tahoma,sans-serif;background:#f0faf9;direction:rtl;font-size:12px}
+  .page{background:#fff;max-width:1400px;margin:16px auto;padding:16px;box-shadow:0 2px 14px rgba(0,0,0,0.12);border-radius:8px}
+  .header-table{width:100%;border-collapse:collapse;border:2px solid #0d9d91}
+  .header-table td{padding:8px;border:1px solid #0d9d91;vertical-align:middle}
+  .header-logo{width:120px;text-align:center;background:#fff}
+  .header-logo img{max-width:110px;max-height:70px}
+  .header-title{text-align:center;background:#0d9d91;color:#fff;font-size:16px;font-weight:700;padding:16px 8px!important}
+  .header-code{width:110px;text-align:center;background:#fff;font-size:10px;font-weight:600;color:#333}
+  .info-bar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 10px;padding:10px 12px;background:#edfbfa;border:1px solid #9ed8d4;border-radius:6px;align-items:center}
+  .info-group{display:flex;align-items:center;gap:4px}
+  .info-group label{font-weight:600;color:#0d8a7f;font-size:11px}
+  .info-value{border:1px solid #9ed8d4;background:#e0f7f4;border-radius:4px;padding:3px 8px;font-size:11px;color:#0a7a6e;font-weight:600;min-width:70px;display:inline-block}
+  /* ENTRY CARD */
+  .lb-entry-card{background:#fffdf5;border:2px solid #f9a84d;border-radius:8px;padding:14px 16px;margin:14px 0}
+  .lb-entry-card h3{color:#c07020;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .lb-entry-grid{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+  .eg{display:flex;flex-direction:column;gap:4px;min-width:160px}
+  .eg label{font-size:10px;font-weight:700;color:#0d8a7f}
+  .eg select,.eg input,.eg textarea{border:1px solid #f9a84d;background:#fff;border-radius:5px;padding:5px 8px;font-family:inherit;font-size:11px;color:#333;width:100%}
+  .eg select:focus,.eg input:focus,.eg textarea:focus{outline:none;border-color:#0d9d91}
+  .eg input[readonly]{background:#e0f7f4;color:#0a7a6e;font-weight:600;border-color:#9ed8d4;cursor:default}
+  .eg textarea{resize:vertical;min-height:90px;line-height:1.6}
+  .lb-action-checks{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+  .lb-action-checks label{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;font-weight:600;color:#0a7a6e}
+  .lb-action-checks input[type=checkbox]{width:15px;height:15px;accent-color:#0d9d91;cursor:pointer}
+  .lb-add-btn{background:#0d9d91;color:#fff;border:none;padding:9px 28px;border-radius:6px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:10px}
+  .lb-add-btn:hover{background:#0a7a6e}
+  .lb-entry-msg{color:#e05050;font-size:11px;margin-top:5px;min-height:16px}
+  /* SAVE BAR */
+  .save-bar{display:flex;align-items:center;gap:8px;padding:5px 12px;background:#f0fdf9;border:1px solid #9ed8d4;border-radius:6px;margin:10px 0;font-size:11px;color:#0a7a6e}
+  .save-dot{width:9px;height:9px;border-radius:50%;background:#0d9d91;display:inline-block;transition:background .3s;flex-shrink:0}
+  .save-dot.saving{background:#f9a84d;animation:pulse .6s infinite}
+  .save-dot.error{background:#e05050}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .clear-btn{margin-right:auto;background:none;border:1px solid #f9a84d;color:#c0522a;border-radius:4px;padding:2px 10px;font-family:inherit;font-size:10px;cursor:pointer}
+  .clear-btn:hover{background:#fff3e0}
+  /* TABLE */
+  .lb-log-table-wrap{overflow-x:auto;border-radius:6px;border:1px solid #9ed8d4;margin-top:12px}
+  .lb-log-table{width:100%;border-collapse:collapse;font-size:11px;min-width:1050px}
+  .lb-log-table th{background:#0d9d91;color:#fff;padding:7px 6px;text-align:center;border:1px solid #0a7a6e;font-weight:600;white-space:nowrap}
+  .lb-log-table td{border:1px solid #ccc;padding:5px 6px;vertical-align:top}
+  .lb-log-table tr:nth-child(even) td{background:#f7fffe}
+  .stop-tag{display:inline-flex;align-items:center;gap:4px;background:#e8f5f3;border:1px solid #9ed8d4;color:#0a7a6e;border-radius:12px;padding:2px 7px;font-size:10px;font-weight:600}
+  .stop-tag button{background:none;border:none;color:#0a7a6e;cursor:pointer;font-size:12px;line-height:1;padding:0}
+  .del-row-btn{background:none;border:none;color:#e05050;cursor:pointer;font-size:14px;padding:2px 6px}
+  .del-row-btn:hover{color:#b00}
+  .export-btn{display:inline-block;margin:0 5px;background:#0d9d91;color:#fff;border:none;padding:10px 30px;font-family:inherit;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;transition:background .2s}
+  .export-btn:hover{background:#0a7a6e}
+  .lb-rows-count{font-size:11px;color:#0a7a6e;margin-bottom:6px;font-weight:600}
+
+/* ─── TAB SWITCHER ─── */
+.tab-bar{display:flex;gap:0;border-bottom:3px solid #0d9d91;padding:0 8px;background:#f0faf9;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.tab-btn{padding:11px 32px;border:none;background:none;font-family:inherit;font-size:13px;font-weight:700;color:#666;cursor:pointer;border-radius:8px 8px 0 0;transition:all .2s;margin-bottom:-3px;border:2px solid transparent;border-bottom:none}
+.tab-btn:hover{background:#e0f7f4;color:#0a7a6e}
+.tab-btn.active{background:#fff;color:#0d9d91;border-color:#0d9d91;border-bottom-color:#fff}
+.tab-content{display:none}.tab-content.active{display:block}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(1)">📋 فرم گزارش روزانه تولید</button>
+  <button class="tab-btn"        onclick="switchTab(2)">📒 کتابچه شیفت</button>
+</div>
+<div class="tab-content active" id="tab1"><div class="page">
+
+<!-- HEADER -->
+<table class="header-table">
+<tr>
+  <td class="header-logo"><img src="data:image/webp;base64,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" alt="لوگو"></td>
+  <td class="header-title">فرم گزارش روزانه تولید</td>
+  <td class="header-code" style="padding:4px 6px">
+    <div>کد مدرک:<br>PR-FR-03/01</div>
+    <div style="margin-top:6px;border-top:1px solid #9ed8d4;padding-top:4px;font-size:10px;font-weight:700;color:#0d8a7f">شماره فرم:</div>
+    <input type="text" id="form_number" placeholder="مثلاً: 1404/03/1" oninput="scheduleSave()"
+      style="width:100%;margin-top:2px;border:1px solid #9ed8d4;border-radius:4px;padding:3px 5px;font-family:inherit;font-size:11px;text-align:center;background:#fff">
+  </td>
+</tr>
+</table>
+
+<!-- INFO BAR -->
+<div class="info-bar" style="margin-top:10px">
+  <div class="info-group"><label>تاریخ:</label>
+    <select id="day" style="width:54px">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+      <option>11</option>
+      <option>12</option>
+      <option>13</option>
+      <option>14</option>
+      <option>15</option>
+      <option>16</option>
+      <option>17</option>
+      <option>18</option>
+      <option>19</option>
+      <option>20</option>
+      <option>21</option>
+      <option>22</option>
+      <option>23</option>
+      <option>24</option>
+      <option>25</option>
+      <option>26</option>
+      <option>27</option>
+      <option>28</option>
+      <option>29</option>
+      <option>30</option>
+      <option>31</option>
+    </select>
+    <select id="month" style="width:80px">
+      <option>فروردین</option><option>اردیبهشت</option><option>خرداد</option><option>تیر</option>
+      <option>مرداد</option><option>شهریور</option><option>مهر</option><option>آبان</option>
+      <option>آذر</option><option>دی</option><option>بهمن</option><option>اسفند</option>
+    </select>
+    <select id="year" style="width:68px">
+      <option>1400</option>
+      <option>1401</option>
+      <option>1402</option>
+      <option>1403</option>
+      <option>1404</option>
+      <option>1405</option>
+      <option>1406</option>
+      <option>1407</option>
+      <option>1408</option>
+      <option>1409</option>
+      <option>1410</option>
+      <option>1411</option>
+      <option>1412</option>
+      <option>1413</option>
+      <option>1414</option>
+      <option>1415</option>
+      <option>1416</option>
+      <option>1417</option>
+      <option>1418</option>
+      <option>1419</option>
+      <option>1420</option>
+    </select>
+  </div>
+  <div class="info-group"><label>روز هفته:</label>
+    <select id="weekday" style="width:72px">
+      <option value="">انتخاب</option>
+      <option>شنبه</option><option>یکشنبه</option><option>دوشنبه</option>
+      <option>سه‌شنبه</option><option>چهارشنبه</option><option>پنجشنبه</option><option>جمعه</option>
+    </select>
+  </div>
+  <div class="info-group"><label>نام سرشیفت:</label>
+    <input list="shift-masters" id="shift_master" style="width:160px" placeholder="انتخاب یا تایپ...">
+    <datalist id="shift-masters">
+      <option value="علیرضا بوسعیدی"><option value="محمد اکبری">
+      <option value="محسن عباسی"><option value="امیرحسین شفیع زاده">
+    </datalist>
+  </div>
+  <div class="info-group"><label>زمان شیفت:</label>
+    <select id="shift_time" style="width:80px">
+      <option value="">انتخاب</option>
+      <option value="A">صبح (A)</option>
+      <option value="B">عصر (B)</option>
+      <option value="C">شب (C)</option>
+    </select>
+  </div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar">
+  <span class="save-dot" id="saveDot"></span>
+  <span id="saveStatus">آماده برای ورود اطلاعات</span>
+  <button class="clear-btn" onclick="clearAll()">پاک کردن همه اطلاعات</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+
+<!-- ENTRY CARD -->
+<div class="entry-card" id="entryCard">
+  <h3>➕ ورود اطلاعات ردیف جدید — <span class="badge" id="rowBadge">ردیف ۱</span></h3>
+  <div class="entry-grid wide" id="entryGrid">
+    <div class="eg"><label>خط تولید</label><select id="e_line" onchange="onLineChange()"></select></div>
+    <div class="eg"><label>OP</label><select id="e_op"><option value="">انتخاب</option></select></div>
+    <div class="eg"><label>نام دستگاه</label><select id="e_machine" onchange="onMachineChange()"></select></div>
+    <div class="eg"><label>کد دستگاه</label><input type="text" id="e_code" readonly></div>
+    <div class="eg" style="min-width:220px"><label>نام محصول</label><input list="product-dl" id="e_product" placeholder="تایپ یا انتخاب..." oninput="onProductInput()" autocomplete="off"><datalist id="product-dl"></datalist></div>
+    <div class="eg"><label>کد راهکاران</label><input type="text" id="e_pcode" readonly placeholder="خودکار"></div>
+    <div class="eg"><label>نام اپراتور</label><input list="op-dl" id="e_operator" placeholder="انتخاب یا تایپ..." autocomplete="off"><datalist id="op-dl"></datalist></div>
+    <div class="eg"><label>کد شناسایی ردیابی (۷ کاراکتر)</label><input type="text" id="e_tracking" maxlength="7" placeholder="مثلاً AB12345" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7)"></div>
+    <div class="eg"><label>تعداد تولید</label><input type="number" id="e_qty" min="0" placeholder="0"></div>
+    <div class="eg"><label>زمان توقف (دقیقه)</label><input type="number" id="e_downtime" min="0" placeholder="0"></div>
+    <div class="eg" style="min-width:260px">
+      <label>گروه توقفات <span style="color:#aaa;font-weight:400">(چندگزینه‌ای)</span></label>
+      <div id="stopGroupTags" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px"></div>
+      <input list="stop-group-dl" id="e_stop_group" placeholder="جستجو یا انتخاب و Enter..." oninput="onStopGroupInput()" onchange="addStopGroupTag()" autocomplete="off">
+      <datalist id="stop-group-dl">
+        <option value="بازرگانی"><option value="برنامه ریزی و انبار"><option value="پشتیبانی">
+        <option value="تعمیرات"><option value="تولید"><option value="مهندسی"><option value="کیفیت">
+      </datalist>
+    </div>
+    <div class="eg" style="min-width:260px">
+      <label>شرح توقفات <span style="color:#aaa;font-weight:400">(چندگزینه‌ای)</span></label>
+      <div id="stopDescTags" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px"></div>
+      <input list="stop-desc-dl" id="e_stop_desc" placeholder="جستجو یا انتخاب و Enter..." oninput="onStopDescInput()" onchange="addStopDescTag()" autocomplete="off">
+      <datalist id="stop-desc-dl"></datalist>
+    </div>
+    <div class="eg eg-full"><label>علت توقف</label><textarea id="e_reason" placeholder="در صورت وجود توقف، علت را شرح دهید..."></textarea></div>
+    <div class="eg"><label>شروع پالت</label><input type="number" id="e_pal_start" min="0" placeholder="0"></div>
+    <div class="eg"><label>پایان پالت</label><input type="number" id="e_pal_end" min="0" placeholder="0"></div>
+  </div>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+    <label style="display:flex;align-items:center;gap:5px;background:#fff3f0;border:1px solid #f0c4bb;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:12px;color:#c0392b">
+      <input type="checkbox" id="e_stopped" onchange="onStoppedChange()">
+      خط متوقف است
+    </label>
+  </div>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px">
+    <button class="add-btn" onclick="addRow()">✅ افزودن به جدول</button>
+    <button class="skip-btn" onclick="skipRow()">⏭ رد کردن این ردیف</button>
+    <span id="entryMsg" style="font-size:11px;color:#e05050;margin-right:8px"></span>
+  </div>
+</div>
+
+<!-- RESULT TABLE -->
+<div class="result-section">
+  <h3>📋 جدول اطلاعات ثبت شده</h3>
+  <div class="rows-count" id="rowsCount">۰ ردیف ثبت شده</div>
+  <div class="result-table-wrap">
+  <table class="result-table" id="resultTable">
+    <thead>
+      <tr>
+        <th rowspan="2" style="width:32px">#</th>
+        <th rowspan="2" style="width:80px">خط</th>
+        <th rowspan="2" style="width:80px">OP</th>
+        <th rowspan="2" style="width:90px">نام دستگاه</th>
+        <th rowspan="2" style="width:55px">کد دستگاه</th>
+        <th rowspan="2" style="min-width:180px">نام محصول</th>
+        <th rowspan="2" style="min-width:120px">کد راهکاران</th>
+        <th rowspan="2" style="min-width:110px">نام اپراتور</th>
+        <th rowspan="2" style="width:85px">کد ردیابی</th>
+        <th rowspan="2" style="width:60px">تعداد تولید</th>
+        <th rowspan="2" style="width:65px">توقف (دقیقه)</th>
+        <th rowspan="2" style="min-width:110px">گروه توقفات</th>
+        <th rowspan="2" style="min-width:150px">شرح توقفات</th>
+        <th rowspan="2" style="min-width:200px">علت توقف</th>
+        <th colspan="2" style="background:#0a8a80">شمارش پالت</th>
+        <th rowspan="2" style="width:38px">ویرایش</th>
+        <th rowspan="2" style="width:38px">حذف</th>
+      </tr>
+      <tr>
+        <th class="sub" style="width:60px">شروع</th>
+        <th class="sub" style="width:60px">پایان</th>
+      </tr>
+    </thead>
+    <tbody id="resultBody"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-section">
+  <div class="footer-row">
+    <div class="footer-group"><label>مسئول واحد نت:</label>
+      <input list="net-list" id="net_manager" placeholder="انتخاب یا تایپ..." oninput="scheduleSave()">
+      <datalist id="net-list"><option value="مرتضی صالحی"><option value="امید ایزدی"><option value="محمد قره یالی"></datalist>
+    </div>
+    <div class="footer-group"><label>مسئول کیفیت (بازرس):</label>
+      <input list="quality-list" id="quality_manager" placeholder="انتخاب یا تایپ..." oninput="scheduleSave()">
+      <datalist id="quality-list"><option value="رضا رحمانی"><option value="مهدی بهرامی"><option value="مهدی رشیدی"></datalist>
+    </div>
+    <div class="footer-group"><label>مسئول خدمات:</label>
+      <input list="service-list" id="service_manager" placeholder="انتخاب یا تایپ..." oninput="scheduleSave()">
+      <datalist id="service-list"><option value="شیرزادی مهدی"><option value="خدادادی صادق"><option value="کیانی ابراهیم"></datalist>
+    </div>
+    <div class="footer-group" style="flex:1;min-width:280px;align-items:flex-start">
+      <label style="margin-top:6px">اسامی غایبین / مرخصی استحقاقی:</label>
+      <div style="flex:1;min-width:200px">
+        <div id="absentTags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px"></div>
+        <input list="absent-list" id="absent_input" placeholder="انتخاب یا تایپ نام و Enter..." oninput="filterAbsentList()" onkeydown="onAbsentKeydown(event)" onchange="addAbsent(this.value)" autocomplete="off">
+        <datalist id="absent-list"></datalist>
+      </div>
+    </div>
+  </div>
+  <div class="confirm-section">
+    <div class="confirm-text">
+      اینجانب <strong id="masterNameDisplay">_____________</strong> صحت آمار و مندرجات فرم فوق را تأیید می‌کنم.
+    </div>
+    <div class="confirm-check">
+      <input type="checkbox" id="confirmCheck" onchange="onConfirmChange()">
+      <label for="confirmCheck">تأیید می‌کنم</label>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px">
+<button class="export-btn" id="exportBtn" disabled onclick="exportToExcelGuarded()">📊 خروجی اکسل</button>
+<button class="export-btn" id="imgBtn"    disabled onclick="captureImageGuarded()">🖼️ ذخیره تصویر (JPEG)</button>
+</div>
+
+<footer style="text-align:center;padding:18px 10px;margin-top:10px;font-size:11px;color:#999;border-top:1px solid #eee;line-height:1.8">
+  © 2026 Abbas Sadeghi. All Rights Reserved.<br>
+  Designed and Developed by Abbas Sadeghi<br>
+  Email: <a href="mailto:1abbassdgh@gmail.com" style="color:#0a8a80;text-decoration:none">1abbassdgh@gmail.com</a>
+</footer>
+
+</div><!-- end page --></div>
+<div class="tab-content" id="tab2"><div class="page">
+
+<!-- HEADER -->
+<table class="header-table">
+<tr>
+  <td class="header-logo"><img src="data:image/webp;base64,UklGRjIaAABXRUJQVlA4ICYaAABQfACdASoRAd0APm0ylkckIyIhJ5MLOIANiWNu6B/Tiv/M6sa+TQLwf+gEdwPgH+A04lMf1XbMzH6j/S8xb25GSfM9HecH/feqnzDP066bPmX83/zkd/C3qnAZv7x2r/4v8mOyD9We2Xxv/bmT/rx/yPQT+Qfbz8l/aP3B+Nf9L/rvAv5O/232yfIF+NfzT/B/2X9zuCv2j/Sf8j/AewF60fSv87/hv3c/u3x2/Xf8D0R+0P/G9wD+Z/1r/Z/mt/evm//b+C19s/5XsAfzX+2f+T/F/lV9Mv9H/3f9L+YXs+/Of8d/5/9J8A38t/q//K/wn75f5v5sP/r7Zf2e/9HuZfrh/5s6FOGv7F9FwxT588S/9p71QdbSHMnfh/6ctTPyXAibJ4H1gROwK1mk+5O8rp2cwaNVHIuOuJwkwY1/3Jri3hIAkXzovgTIs0+BGrcgyDPLGKvrY/F5Z0FnNNZ3JYyIk4Hy1dfbPaX0Sdt3c5LMHyMLIRRU4vNjHJUHvdvalN5wtRTQRrPtyFxKxxK8A/c4Ml5t597t8CLgtL5VpInEs/SZVIc1H1iItQeHbUMV5RxSD4CGGGlzel8ARP8yp9sjE51wWZqRqv3FF3/rlzx8er9MrKRBjbsA+YcsAq74GUvV+fg6K7ZofAIatgyeU4MMOmySS8u4nfqWJv3x5oa3Cki6fiPlbf5fH3Gf684TEPcI2gx7mAzfxJdwoompNNx61iO5g5gRAO4NTSwixd9cCFM+fqw0ozS1hIFDFIHmErN5Vmw22GpQI+8bd1eja99S7OIB/xUxE2WFmV4ff3yRcdcTiAUuPoTnPdqiK8M5qjwHpARKLDJcLhsAQaEa1LtN5/gE01ycLR/0Z16N5pqdvRLMUeT2C98cXo4D5D3vDN6fj6w2hywhvd6O7d7ZV6nGnk/4DsDJnjyxe+Ftu84tGPHVL/2lMpcz1//psZpJUHXFR9C1f6JIimagw9yefF1hU+yT+FBoeTKFp8oISb3+jKCWO6Ii42+YriZoIiMitgOSRTtR3qj0NWXFGZFRTDctAcVyTJGTVhPGNyqHFJcJXOOeIDZS7IKt494NF6Aj0cEt8uz1WOixG3fyprNvej72p1b5BR1FXCgTrHoC2nx20NGwrkLjhOtKV2ECnNQvfGq4zFGTvUiLvqQjVJQC25ZDvYLu/kdfYS22KhKCSWfS0e1WvrGhOPP1vRSxlt8n0wpK/ruOblu0Fo7en+mYWxgbmGjUph0bGOAnF0oIzoHufB0egedVwlPN9DJ9XDskNZgReaN0+EYoCfgDPiovKU8cemvzmfJScz2g3HXFKIczNGe04imrYMdgAP7/LMPpXm39UD/Y6QBhljWs5Ld0zlD6V5t/VA/2Oj/ymbZG+Psedb3ml8jXFJPY7nKIxHLPPY72RUMSue7tduIkUsbSrzZFnB0VsIxdyPCPKm9u3IevfSeIA9qzNX+bXB+BHYZzuoGP0KJ+EXMieZQSTvHXeFBWEv+Hf++VatBeocPOyfdlua9dyuJI3p37pguEK80Mz0k1tLBtXBeIfcN4ALqnZdzwjJmvfywi2CBYDJTrEXr8hICAatl2gHfT7hY741xZso+Q/jeySfg7lx3TuucpmeirGWsJvK+wgYFRf0lb1Ivoyl4gcA6pplx8YFca4YG13tXiNjinNXztuXp82DQTyJFvEyucI9GbFXuQEYxHZKeNX3bFa+pJUNsi75d1bq/lv+YxfKYt7wZRp7AeeAn19CQ9JAI2WJe5mwDLNehw2zUz22EVRDJ7+zYt9nfYW1D8jtH4DTU1C8nZDJwgzMR8BFRIJoTJpTdhcpW4l4HL9vGwEHKFuKN7cPBJXXAHdRSi9YD9KbYpa9eUXPAxWXtgFwA4qc1HsAAvivsHucv9dMm/BnzWbbLUdMPslMgEm728Se44oglZB0Q9AGiX+fpp/IFypErXENMuw+zVVY4KFeg3jvPiV1GDskl6mtpCXP38vmmJWNf/sXNVcKAAJj/O39guMneHLpMOj2tmfkavyQJ2xkjsZVK+dAqgutgNpWvbKbuSuPlJrWIrvFS7qV6m+TDeEVW37hi7HbY3pUw0Fix+034bFg7D4Sa9gZ5VS692hyByZ/xYHRSLF3xtxzpmkORKAdoisKlTXPxhIPBMbs1MoUA0K2BSi9eZueJ0gZH5NpGMCMXyTO/wSXidpmK4B78BI5UnBbwapT2naHRHduJtAqWxCxkESBlvFyKQlP5UaccTTn0Z/3bS3xL8qrRug3wSLStspa1vhSP7rNrYh/vlOWhQIXYpj0NPG+qtzgudu5Zdb2jiFmy0Cd9CVbRkQvPC6G81s4tFQEVzyBEZ1QX+XxOZI1NCvJcLEOyX5DsERWp0BXYWqZ9c0EYI0OYQBrk+p4PwgwfQG4WqGrm6Hj5qR3vb6Xa4yQ5MIOyn3oetIXbtQfKEnEUvPPagAKc7L8AdDMc0+jVuGIFQdc0/I9a5y/zaHbXigmgZ45iIoX13W7jB46kr5v2ahpJzY9ljuGrNL0mGZb2Liuc3j0JgunHKmKez+C127RcI0xJEtkvjMJvEsV989uzpyzk/2mVqzBSDc2W/HZDyFf39P80a2cje7s+uz5IXm9yb14BAvAJgxQhWDi3Jv/cb5AavADyepimkgUw1X2+Gh+oq1I6bn+jaK6M854ma66gRnbRsIttlpRL09jC71CEudinyB9dy8G3N0CtDHgKZ3Msv2ENLKtjhaHI3nLd8VFPtxff+Y1HqhnICWAd7c0CFCD36GfrQiq5ielQBdoy0kZMsrfjGN51HaJ0obwS6cpuhVhj8V+jSd9HG0/EW+ZYFCT4botvuOq6+aTVbGJYO5XkPqtRuJHyOd7R/X1TtX/fG7NzkbcHeEgwlf51yJfcXtfCoJF/bmZpLg+yY3WGgLGcIP6Y7X8Dr6usaSnz4EXf4sc+T8KaMoJ5hxMMzZgUehFJxOwa/TiQwbEMwr/a/tJ10KNhFTibJ9OdJuC0wOAHHwTOdlnIhc/hcdyOkruyatoQsF/XhmkrneUQAaXGB1gUsLrg6PUyksPtcqmwZJ/wyUgyGCcWcaLxP8Hr/zHRJEDpqzhLmxO4u+oFmBk7vW+aUWrIjOLyBqZkKsuzqraAI49880jfMmURCjn/MCedcKDCBxvEp+w+dgL0Q69XfADBiW6KT+BzfQFe0NyWQW3SJ8inBfTW65os3Xqh4M+kUxsry8/wS7/UiCpyli86srSMLbCijnp1oBq31Lv2mj5ZTFJof/uAmmD/npEgrIzyFM4Xx1u4toPkridLjmQeUVCVdjB+0n2S4MyfUjl64qHr0LWyYBd5vLh/J3HvKfG8Nfr4/kzHUjsxddisTVsxLthdSREwPwwfxqWXbOqP7SN35xj5mER0PnSV2MYBxJOa1vPVNMnf6Vu44qKQaAGdaSvtyR1P74yrV5IykiKo5gT7ecc1/HHORyV8o3zYENWl4cH1YIOc5N5TxKcWptl06JFx0EB1DnDNVdmsjJ1edff5nEXJhiDgJRxpujEAtEIMCcx2xIU9OaUknPyJ3mqjh4WBuO+B5mermSszJsFhkqsnFW1hjxl6BfpCYL16M1lHwuSqIn5s6wY4LoQRBd4iaOAiEO2RFrDAMBmHX53+OM+xjkdTYIquAA37BUX2gpxjcpyfAon9e87p7llRb0BZyrNJOeOcKkMvhX3MdAC7KVFp7kYUmZ1zHK3dAjazW5F4+xY9Gs9TxYzuHCYWysbm3biJWVsURE7BnE28Fuw+zJFcp8JPUapcIVyA7AhNA126SdYVvWYtu2JiuO0AKN/fyjR0zbqwIqgCfDwa0yjfH+BoWW3QHUPnNLGzCCIRGyIsM1i/t0DqDJZ9tLNRCSnIYti5ARl4FxiAlDdU8ci2pqXFejZVEDZucfJSG4sNQQo9ygEnoq20aWH04h5GwdRKPfMLMNgU5T9NO7dvC0UJeymrBjeeP7ifAHlrlG+1aWsCfXkDRk/oriO/X2xadQ3mMLaSLMr5e2zMkml/SogmAkc2WVnPR0nyK7k3bfLpbS5DjKIVPpTmW5cgokiKPbq2qrerQkZx1dcGFqO2UmAa/hWDFfv+/yx4en3ZzDWHERy9r9+UgxFjAfI9IiM84rHzPGLVQicHdVwJntS4wux9XEWDpowve1HGdKGjU9S1fznSpoG/PZZPgAjd6mOl+8Mydw1K2IVH0WZ/GOg/T2ckpWt0epvIlu/LGxpIT/9klQjkmvgtXkf/yCRL53FjQ2CZczFguAb6c3uCkaCIJMXQVPsxWC5pNDILkkVmLfaT5QE4C3vDkcUVaFxuHRjC+ptrNVQ3k7qplbJ1/ZnMr3Mc0a7C08qP14iVqDPfxmBsz2opf2z+gkJjG24tqcvia/ry3gLAJnVdo7R3FgK5iBs8DKib4EJ/8810vZwEiIpQdgBOqRiXtBqdRoeaBEQMFPj6NA5Mu9BlsFtG3DHYQOP0rKgSrHIj6JpwO9NNyxoIqup03bKTjNfvpLzrqqnyazN3A/G1s6S9otpIRyeKyCdwG6gVcCqyByA9mAA5rL9f3yYa0zlrN5qC1VWl2UX3rbMhUl6+UfT80Cmm8ZTYuUAZwPoDr1Utz5Gv/BxOgn36RZbCL+9Ytv7iGHBSVX7+wGdmjg8WMnkQHXszw4FH5Wc36mIZ/COCosdMas0lI6yadb6BUBRUUEZMV6V5Nvo9WWtAiSHc1j4envTmIOhvQg+b/xUk7xogFQquTXOvJ35aHsy9LGCseNrdwpUJex1QXP+M2Hs+Wq9syg+Enia89BbYC1VNUz+c7PAj1knuzw3MA7/o/xsr6RfNjZlQCSJgqenHU3QK2Owjt0DpVy620AXDu51RB5SjfCg1WcoknsFhnuUbc96y/0ESp/dU85VPlC3O9D3tCBDITG5CDsVOkxt+56QVnI+L9bVKw+5A/1usCZULdAn0IbH9mIQBbsXoCIchTtEXd26gpz+k3LLxOyPwG1WqwcKeT4K1BGxu+L4bMubMj0XtdjrEbAQ0aNOA8w6VX0gkJotX1oX7xJ+aCqr+0cA7YxFeFTL2jbj6uysMUvfHQbqnGbrnwuR6m8gmIQ+7gvRNPhuEHYSZzy+yMqVVQ5Y6fSO1D5KMWHvEqKkFSBAnbZvwEgALs08fSQBgCZf1ceCE+3npwOkntegrF+c3//ev1r3qP/q54KZ0fHX/gP+FNWCXHrTlyCZm+Nn7GDnW8hNmlz08TG78FellNHMxmpgy5hk3kOydECdJwA86EORiC9gC4gEn6ajslyiS4adPlQ7BZHXxtd26sUe5bmph6X7M0ZwhbwfyIt3mZi1gRKuGwJ/vgWLMhwbUEFkNRsPNZSpNVS6Ytv4JL5KzREArfMs0Z6sQk3Mk0yZnii4l/GFgHleXrMib6NB5dH/1b9pql5mSMJzWzLdxFO3E8K5HyoH1IJqAfQya9TkuQL99qfyxxX8uICykvBNClS6ry+lAAeN0yS4uBSUcmSZ+f6AcaSfhB13PVuAxT55oLQcYzIl38ikUsz7tR5I5Y9p94mZzVGsUd8GF0Vzo2nNo6MnoIJLPg2ZIBh29mvkQ2H08kTpfuAkq4TpArFdMkB98uvB1b/zNKRikHENGi+rlVCl1NFCaTG/zr25KqS3aqJJohv+9qOLe26Bzx4mpO41/j3adWGxyA/p9KpRaLem9bbmX6SYcCmnkUPN5bc7A2LaxRNkQHcQsvjPEpdMeTz/jscfR0uDoi5kkq8p/PHAxNerAus6qEhpEZK0fV0lS/fEaof8EgXYtnZAKiPYAsaQbHb7aszDz6wgkNprYmFInPIV9Mg7BQDOTUvYe0KflUkty8pdX3VRQvJvmXDr6DJD8PohiGbpy7mvxEHmAzl0JBC4VIZOEusz7YpdM14gei066+8LOdL4kHRKwQvB6iORZyRji5j4MGABf4RTYrIR1yx9Nz7ReN4dJdoi/lLfiWJGRWJ2JUwMNEnhU0lKSUIPzEL26SQYpMemtcwJRIs7SY/iMFinX0AhL2i6/DBICjgw4kWoa501vh/1vpfU+QrX77R00i2Ht9d524Ewf/4Trc7P9hazv0u0BX62I9i3YwCYVHZ/xSWrOnNLgktSXIdl/nWDsTaj0EP2FbRnA1WCTmpSv2DudAL9lDZ/bht3lr835gbqAwJKd+nj8sS+/ttjyHUTSYeaHn5mfSzSD/vaoON6dokVfPHlgWVCQyS96+YNtN+xb5YeW19ab7ProLXMoNPmJ/MLEVF0es6at8Nm9bl3NUGhBGAFoQk1ozpSgaOItvwKosXTw5vfolDPRSKRrv80oiLo9cJjJUqOXWsnw9NVtNLJaZYpQwgI2wZ2Ch4+G1X+CR5xkkTEUwY1xIqzetIq0HGXAky/sd4JwhF8tefb1XHG2W5Y0x1Ov+6newz35IgbXZJlHdNx55l3ihdTqLk3Isv3I/1a2aM1VfwPJN5rjw+4fpbtA4f2LLq/0UOr1dtrOh+fPnO+dwX/jAh6jfasfNAp6QZOCgm/NWqTYnZ/1D32MEZTC7rldPSve26DqQJOV+n6vxIFBeEZupSoGDACfSIMHuJUp1tSmWShc/3e2grtvbDZrlbcuG94MPsFUyjQLT449lLz3ZUs3AOuCNhGp9rMy70b8udVsPYGzU4wkWnWlA9451tkjpcgrF2MoFNWckvFlPE04tiU+xwTCetFM8D9pMqv53b8JhEKKEpVx+MmXLbNCsi8K8OOpIyL2MlN3+OJazww5YK71fyDZ+2d/jQO/GA/8+/g+a4lKBSkDd//BfsFG1WEzbuKVgDG+9l/halbgeaT1z8bxVda7PdRzj/ddC3vRE03E3ith+s1rMV3taw6wUKXLj6g7P/4P0ebIN+ZZJaUJ3OQeKM3Hp5PzT8RooQ9HB4VQmQiWOsBTe0CwiHepTM8kqOhPXAc3wJ9M6yCjtSWwVObgX26QcJFBxDxX3jSW92FIFQZwJsZLKFgUZWm5mNIJ9Y0X/1Ctp/IF1oygAeX99g6yNOQZxi/7//k24Qr/HZH+5+/6Vrd70DpkIp/VjIEzny+7fjrI3gSRvVLuc2WIzNHhMCiwB7P3PWV721SUWduKqgTToHoGyeNuMhvIhXnkGn1n4lA5TiMFtlNughDmLAbAhPajrp/KxEf63LY1CoSk2Hvffi+m2mUjMAcgFtrL/9Auys5k1bNUkFHfIHWl9D1F1IF1tq/cBdTe51rfjknGGJtYQZ9gGxki4+XkYf7Rz3OG3Q7un8huvkYudStx0pVKlC+10hs7EivGTMMlcF+dpExCU7HKHeI1vCjn/1aY8YQxpCy3M+OCs9/16km9WRFUECUZs36kYzlveVYGxtS+sBraVZb0VVkaFjyeZAnHHpA80bOP6HRjuuCX1ojLVtID/sv0zdhwAmPP3Lm+rO9rQDR6P8+rb3SU6ZU3dhCId5YHHXadrSCwr9zFL4zqz77KmLNlmwDSjThBczt9o7L5ACBAcBcwLeHYA8otjkQpGISS7/eKQ4uNORPcTxkRmPuUlJsnqUIK5ZB37RrLbqbx432S+MjS7vcca0LGN/wWQjWzHhnWUmesMdHfcSBVx6v7cMV+egqshrHvlKFIuAqgE5C2TcIotzwlr81InqK5Wsq9CjEp12W1IsT95to/DsssGluuCAuEDXxeD2thoyzDAHH2BOA/0JJBmNNMRNBrEYxtjIRq93YtSnsEwTWBMgvNz8mJyBvcpBymdO26B+vmX9x8U6H/dAEUACR02gOiIP8esGILH/kYVAVWjXNoIJQXwOZEQKaL+8ONaBWs2mQCnTTAHrlFspGZbn1zzD4CJzyLNVrFn2TL++p9SS9CtE8zUXgNO/BY5/l3lOZ4+SG9HF6DPyz7P+//s5yVbCX2AkBNzD7+BIUEC4Rk65FWg55HH6xYE9xbznx0f1h9fQFNM24eFHCU+si+b+tHxHlCo9HFYMPBInSurlKKgFgseQRii5dkGUf/SFwlhPpz5eb0x91Hx0/GUlhDkfxvxd+dRdsaYPlSpFb1GBu6/+puiPLN2bz7JfQOgFrdr/8Vswte6JD+Up2N98UQVkb68myGt8p0wkxYvOvkbwCCaPTLthg1Ou/vbgRUavKgkoT9yBMvUlKk1f4tc7xLql96R2wMmMq8wmFk3ubQKNf4chpGLqtOje0vx49zZ27uA/x0YoBR7x/xuNX159iDX5qgO2kXseUM2RCIGXYd6X1lAQmA/91ndJd7pJ3k8cH4vEpF5BzTMXdzCQdr8Kxy9j1ldNRA0yhKq1TeJsJn3W03frSr6XoN4gjqtcsfGFt431JCLics/CYxh43NH5aMgJYmpBipOYrdumBX+XDIuUDxF/kFdihpmdRqs/eE/7flqbWubLTWFBQqxWGJxSQZconxHcRKKdurGx/iuhhGfRIaPwjtXIAdWwfoR2wOb4LqX6q6B31gXdXGTCFgsOzd0gzBvSINM7uGu994nTmWqyYhHy5hJ+RCGtrhxjeQ+VwGwHJTeEwtQPt+gozkMvuygvxqFh9E4HkF8wRVJgl+waWReiR0HKEJO8lhdun6IA9H1P4O4NITO2vqY7c70VqLzOYyVNlBZbSzDOEEN9MWRy13rn65TbRhDeMVl3pbFokE/mf1SU1ra0nj/YYnfoMgdF7brgG/HeMYxRDaBmN6M74dWmjP+il+LukMOJOYXUDdKBMEmJD6sh24YzE6QdZPW9OBfZoaYESRkHxef4mrTaxg1/OvVZQHyg16GbclpKRwz91VApe+WgXAvDSbtrYy2NX9C8h1L00VoJ4zYOgitiDxT/Zepd0PtV4XoA7RZZvTJ14FMk1MQ6eyap6SuR9IEKJwUSV/SrC7QLDxJna9YbmPDkcxbrVMWPvea866eC7daees0Hofg7ExXSQPSJRJys8J9NvGicvMklH2J8cx1vxzsICHARlMAAAAA" alt="لوگو"></td>
+  <td class="header-title">کتابچه شیفت</td>
+  <td class="header-code" style="padding:4px 6px">
+    <div>کد مدرک:<br>PR-FR-07/00</div>
+    <div style="margin-top:6px;border-top:1px solid #9ed8d4;padding-top:4px;font-size:10px;font-weight:700;color:#0d8a7f">شماره فرم:</div>
+    <input type="text" id="lb_form_number" placeholder="مثلاً: 1404/03/1" oninput="lb_scheduleSave()"
+      style="width:100%;margin-top:2px;border:1px solid #9ed8d4;border-radius:4px;padding:3px 5px;font-family:inherit;font-size:11px;text-align:center;background:#fff">
+  </td>
+</tr>
+</table>
+
+<!-- INFO BAR -->
+<div class="info-bar">
+  <div class="info-group"><label>تاریخ:</label><span class="info-value" id="ib_date">—</span></div>
+  <div class="info-group"><label>روز هفته:</label><span class="info-value" id="ib_weekday">—</span></div>
+  <div class="info-group"><label>شیفت:</label><span class="info-value" id="ib_shift">—</span></div>
+  <div class="info-group"><label>سرشیفت:</label><span class="info-value" id="ib_master">—</span></div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar">
+  <span class="save-dot" id="lb_saveDot"></span>
+  <span id="lb_saveStatus">در حال بارگذاری...</span>
+  <button onclick="lb_refreshFromForm1()" style="margin-right:8px;background:#0d9d91;color:#fff;border:none;border-radius:5px;padding:4px 14px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">
+    🔄 به‌روزرسانی از فرم گزارش
+  </button>
+  <button class="clear-btn" onclick="lb_clearAll()">پاک کردن همه</button>
+</div>
+
+<!-- ENTRY CARD -->
+
+<!-- TABLE -->
+<div class="lb-rows-count" id="lb_rowsCount">۰ ردیف ثبت شده</div>
+<div class="lb-log-table-wrap">
+<table class="lb-log-table" id="lb_logTable">
+  <thead>
+    <tr>
+      <th style="width:32px">#</th>
+      <th style="min-width:120px">نام دستگاه</th>
+      <th style="width:75px">کد دستگاه</th>
+      <th style="min-width:130px">گروه توقفات</th>
+      <th style="min-width:160px">شرح توقفات</th>
+      <th style="min-width:200px">علت توقف</th>
+      <th style="min-width:190px">نوع اقدام (تشریح)</th>
+      <th style="min-width:220px">اقدامات کنترلی و اپراتوری</th>
+      <th style="min-width:120px">مسئول انتقال اطلاعات</th>
+      <th style="width:60px">ویرایش / حذف</th>
+    </tr>
+  </thead>
+  <tbody id="lb_logBody">
+    <tr><td colspan="10" style="text-align:center;padding:20px;color:#999">هنوز ردیفی ثبت نشده</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div style="display:flex;justify-content:center;margin-top:14px">
+  <button class="export-btn" onclick="lb_captureImageGuarded()">🖼️ ذخیره تصویر (JPEG)</button>
+</div>
+
+<footer style="text-align:center;padding:18px 10px;margin-top:14px;font-size:11px;color:#999;border-top:1px solid #eee;line-height:1.8">
+  © 2026 Abbas Sadeghi. All Rights Reserved.<br>
+  Designed and Developed by Abbas Sadeghi<br>
+  Email: <a href="mailto:1abbassdgh@gmail.com" style="color:#0a8a80;text-decoration:none">1abbassdgh@gmail.com</a>
+</footer>
+
+</div></div>
+<script>
+function switchTab(n) {
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===n-1));
+  if (n===2) {
+    // force save form1 first so logbook reads latest data
+    if (typeof doSave === 'function') doSave();
+    lb_loadForm1Data();
+  }
+}
+</script>
+<script>
+// ═══════════════ DATA ═══════════════
+const products = [
+  {code:"p01500073",name:"دیسک سالید چرخ جلو مزدا کارا ماشینکاری شده"},
+  {code:"p01500072",name:"دیسک چرخ عقب دنا پلاس توربو ماشینکاری شده"},
+  {code:"p01500069",name:"دیسک هوا خنک زانتیا ماشینکاری شده"},
+  {code:"p01500068",name:"دیسک سالید زانتیا ماشینکاری شده"},
+  {code:"p01500061",name:"دیسک سالید آریو ماشینکاری شده"},
+  {code:"p01500059",name:"دیسک چرخ عقب سالید H30 Cross ماشینکاری شده"},
+  {code:"p01500058",name:"دیسک چرخ جلو هواخنک هیوندای سوناتا ماشینکاری شده"},
+  {code:"p01500057",name:"دیسک چرخ جلو هواخنک نیسان ماکسیما ماشینکاری شده"},
+  {code:"p01500056",name:"دیسک چرخ جلو هواخنک تویوتا کمری ماشینکاری شده"},
+  {code:"p01500055",name:"دیسک چرخ جلو MVM 530 ماشینکاری شده"},
+  {code:"p01500054",name:"کاسه چرخ عقب MVM 315 ماشینکاری شده"},
+  {code:"p01500053",name:"دیسک چرخ جلو هواخنک جک j5 ماشینکاری شده"},
+  {code:"p01500052",name:"دیسک چرخ جلو هواخنک j4 ماشینکاری شده"},
+  {code:"p01500051",name:"دیسک چرخ جلو هواخنک سانتافه ماشینکاری شده"},
+  {code:"p01500050",name:"دیسک چرخ جلو هواخنک مزدا 3 ماشینکاری شده"},
+  {code:"p01500049",name:"دیسک چرخ جلو هواخنک هیوندا آزرا ماشینکاری شده"},
+  {code:"p01500048",name:"دیسک چرخ جلو هواخنک کیا سراتو ماشینکاری شده"},
+  {code:"p01500047",name:"کاسه چرخ عقب برلیانس H200 ماشینکاری شده"},
+  {code:"p01500046",name:"دیسک چرخ عقب سالید برلیانس H300 ماشینکاری شده"},
+  {code:"p01500045",name:"دیسک جلو هواخنک CS 35 چانگان ماشینکاری شده"},
+  {code:"p01500044",name:"دیسک جلو هوا خنک مگان ماشینکاری شده"},
+  {code:"p01500043",name:"دیسک هوا خنک شاهین ماشینکاری شده"},
+  {code:"p01500042",name:"دیسک هواخنک چرخ جلو MVM315 ماشین کاری شده"},
+  {code:"p01500041",name:"دیسک سالید شاهین ماشینکاری شده"},
+  {code:"p01500040",name:"دیسک هواخنک چرخ جلو آریو ماشینکاری شده"},
+  {code:"p01500039",name:"دیسک هواخنک چرخ جلو MVM X33 ماشینکاری شده"},
+  {code:"p01500038",name:"دیسک هواخنک برلیانس سری 300 ماشینکاری شده"},
+  {code:"p01500037",name:"کاسه چرخ پیکان ماشینکاری شده"},
+  {code:"p01700002",name:"بلوک سر سیلندر OM355 ماشینکاری شده"},
+  {code:"p01500030",name:"دیسک هواخنک 4567 ماشینکاری شده"},
+  {code:"p01500029",name:"دیسک سالید2108 ماشینکاری شده"},
+  {code:"p01500028",name:"دیسک هواخنک 1445 ماشینکاری شده"},
+  {code:"p01500027",name:"کاسه چرخ206 ABS ماشینکاری شده"},
+  {code:"p01500026",name:"کاسه چرخ OMC 808 ماشینکاری شده"},
+  {code:"p01500025",name:"کاسه OMC 122 ماشینکاری شده"},
+  {code:"p01500024",name:"کاسه OMC 128 ماشینکاری شده"},
+  {code:"p01500022",name:"دیسک هواخنک 4110 ماشینکاری شده"},
+  {code:"p01500021",name:"دیسک هواخنک 9223 ماشینکاری شده"},
+  {code:"p01500020",name:"کاسه چرخ گازل ماشینکاری شده"},
+  {code:"p01500019",name:"کاسه چرخ جلو نیسان ماشینکاری شده"},
+  {code:"p01500018",name:"دیسک سالید 5656 ماشینکاری شده"},
+  {code:"p01500017",name:"دیسک سالید2121 ماشینکاری شده"},
+  {code:"p01500016",name:"دیسک هواخنک گازل ماشینکاری شده"},
+  {code:"p01500015",name:"دیسک سالید 2101 ماشینکاری شده"},
+  {code:"p01500014",name:"دیسک هواخنک 2112 ماشینکاری شده"},
+  {code:"p01500013",name:"کاسه چرخ 103 OMC ماشینکاری شده"},
+  {code:"p01500012",name:"دیسک هواخنک 4020 ماشینکاری شده"},
+  {code:"p01500011",name:"دیسک هواخنک 8515 ماشینکاری شده"},
+  {code:"p01500010",name:"کاسه چرخ OMC 108 ماشینکاری شده"},
+  {code:"p01500009",name:"کاسه چرخ عقب نیسان ماشینکاری شده"},
+  {code:"p14100016",name:"دیسک هوا خنک 1016 ماشینکاری شده"},
+  {code:"p14100015",name:"دیسک هوا خنک 4151 ماشینکاری شده"},
+  {code:"P13100002",name:"بوش xu7 ماشینکاری شده"},
+  {code:"P14200007",name:"دیسک سالید 2805 ماشینکاری شده"},
+  {code:"P14200006",name:"دیسک سالید 8105 ماشینکاری شده"},
+  {code:"P01800002",name:"منیفولد TU3 ماشینکاری شده"},
+  {code:"P01800001",name:"منیفولد TU5 ماشینکاری شده"},
+  {code:"P14200005",name:"دیسک سالید چرخ عقب پارس ماشینکاری شده"},
+  {code:"P14200004",name:"دیسک سالید پیکان ماشینکاری شده"},
+  {code:"P14200003",name:"دیسک سالید TU5 پژو 206 ماشینکاری شده"},
+  {code:"P14200002",name:"دیسک سالید TU3 پژو 206 ماشینکاری شده"},
+  {code:"P14200001",name:"دیسک سالید پراید ماشینکاری شده"},
+  {code:"P02000001",name:"براکت گیربکس دنا ماشینکاری شده"},
+  {code:"P14100014",name:"دیسک هواخنک 4249 ماشینکاری شده"},
+  {code:"P14100013",name:"دیسک هوا خنک 4294 ماشینکاری شده"},
+  {code:"P14100012",name:"دیسک هواخنک 2586 ماشینکاری شده"},
+  {code:"P14100011",name:"دیسک هواخنک R64 ماشینکاری شده"},
+  {code:"P14100010",name:"دیسک هواخنک 2722 ماشینکاری شده"},
+  {code:"P14100009",name:"دیسک هواخنک دنا پلاس ماشینکاری شده"},
+  {code:"P14100008",name:"دیسک هواخنک نیسان ماشینکاری شده"},
+  {code:"P01500008",name:"کاسه چرخ وانت پراید ماشینکاری شده"},
+  {code:"P01900001",name:"توپی چرخ جلو پراید طرح جدید ماشینکاری شده"},
+  {code:"P01500007",name:"کاسه چرخ L90 ماشینکاری شده"},
+  {code:"P01500006",name:"کاسه چرخ عقب 206 مدل TU3 ماشینکاری شده"},
+  {code:"P14100007",name:"دیسک هوا خنک ماندو ماشینکاری شده"},
+  {code:"P14100006",name:"دیسک هوا خنک L90 ماشینکاری شده"},
+  {code:"P01500005",name:"کاسه چرخ تیبا ماشینکاری شده"},
+  {code:"P01500004",name:"کاسه چرخ پژو 405 ماشینکاری شده"},
+  {code:"P14100005",name:"دیسک هوا خنک پژو 206 ماشینکاری شده"},
+  {code:"P14100004",name:"دیسک هوا خنک روآ ماشینکاری شده"},
+  {code:"P14100003",name:"دیسک هوا خنک ریو ماشینکاری شده"},
+  {code:"P14100002",name:"دیسک هوا خنک تیبا ماشینکاری شده"},
+  {code:"P14100001",name:"دیسک هوا خنک پژو 405 ماشینکاری شده"},
+  {code:"P01500003",name:"کاسه چرخ پراید طرح قدیم ماشینکاری شده"},
+  {code:"P01500002",name:"کاسه چرخ پراید طرح ABS ماشینکاری شده"},
+  {code:"",name:"بوش XU7 قطر 75"},
+  {code:"",name:"بوش XU7 قطر 78"},
+  {code:"",name:"بوش XU7 خشن کاری شده"}
+];
+
+
+// گروه‌بندی توقفات
+const stopGroups = {
+  "بازرگانی": ["عدم تامین مواد اولیه","عدم تامین ابزار و لوازم یدکی","نامناسب بودن مواد اولیه","عدم سفارش مشتری"],
+  "برنامه ریزی و انبار": ["برنامه ریزی تامین مواد","تعویض خط","بازنگری در سرعت تولید","تغذیه خطوط","عدم تامین قطعه پیمانکار","جابجایی اپراتور"],
+  "پشتیبانی": ["قطع آب","قطع گاز","کمبود نیروی انسانی","وعده غذایی","قطع برق"],
+  "تعمیرات": ["مکانیک","برق و الکترونیک","برونسپاری"],
+  "تولید": ["آفست گیری","غیب نیروی انسانی","بهره وری اپراتور","آموزش اپراتور","تعویض تجهیزات تولیدی","مرخصی اپراتور","جابجایی اپراتور","نظافت","استعلاجی","اصلاح قطعات"],
+  "مهندسی": ["تست و صحه گذاری","ساخت"],
+  "کیفیت": ["ابزارهای کنترلی","طرح چیدمان","عدم تایید قطعات"]
+};
+const operators = ["ارحامی شیوا","اکبری محمد","بوسعیدی علیرضا","بیات ریزی مصطفی","جوکار محمدجواد","حیدری مهران","خدادادی داود","خدادادی صابر","دوانی نوید","رجایی جلال","القاصی محمد حسین","رحیمی داود","رشیدی عباس","سفیدی وند امین","سلطانی امین","سلطانی رحمان","شعبانزاده حسین","شفیع زاده امیرحسین","شیرزادی مهدی","محمدی کوروش","طهماسبی رضا","عباسی محسن","علیمردانی میلاد","فتاحی حسین","قاسمی حبیب","قربانی مهدی","رئیسی محمد","کریم پور حسین","کریمی سجاد","کریمی سهیلا","کیانی اصغر","گنجعلی محمد","لک رسول","محمد صالحی علی","فرهادی رضا","مراد بازفتی داود","مرادی میلاد","میرزایی مهراب","نصرالهی مجتبی","نوروزی قاسم","عباسی محمد","عشوری محمد","قاسمی امیرحسین","دانشمند رضا","طالبی رضا","مرادی علیرضا","صالحی سجاد","محمدی حسین","کیانی ابراهیم","خدادادی صادق","هادیان روح اله","رهنما محمد","الهیاری سهیل"];
+
+
+
+// All rows: each is a unique machine entry
+const allRows = [
+  {line:"خط 1",machine:"هانوا 1",code:"CN11",ops:["OP 10","OP 20"]},
+  {line:"خط 1",machine:"هانوا 2",code:"CN12",ops:["OP 10","OP 20"]},
+  {line:"خط 1",machine:"هانوا 3",code:"CN13",ops:["OP 10","OP 20"]},
+  {line:"خط 2",machine:"ACE 1",code:"CN06",ops:["OP 10","OP 20"]},
+  {line:"خط 2",machine:"ACE 2",code:"CN07",ops:["OP 10","OP 20"]},
+  {line:"خط 3",machine:"DOS 1",code:"CN01",ops:["OP 10","OP 20"]},
+  {line:"خط 3",machine:"DOS 2",code:"CN03",ops:["OP 10","OP 20"]},
+  {line:"خط 4",machine:"ACE 3",code:"CN08",ops:["OP 10","OP 20"]},
+  {line:"خط 4",machine:"ACE 4",code:"CN09",ops:["OP 10","OP 20"]},
+  {line:"خط 5",machine:"DOS 3",code:"CN03",ops:["OP 10","OP 20"]},
+  {line:"خط 5",machine:"DOS 4",code:"CN04",ops:["OP 10","OP 20"]},
+  {line:"خط 6",machine:"J.F.",code:"CN10",ops:["OP 10","OP 20"]},
+  {line:"خط 6",machine:"DOS 5",code:"CN05",ops:["OP 10","OP 20"]},
+  {line:"خط سوراخکاری",machine:"تپینگ 1",code:"TP01",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط سوراخکاری",machine:"دریل رادیال 1",code:"DR05",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط سوراخکاری",machine:"تپینگ 2",code:"TP02",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط سوراخکاری",machine:"دریل رادیال 1",code:"DR05",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط سوراخکاری",machine:"PL800",code:"FR01",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط سوراخکاری",machine:"دریل رادیال 2",code:"DR06",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل کاسه پراید",machine:"دریل هکرت 1",code:"DR01",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل کاسه پراید",machine:"دریل رادیال 3",code:"DR07",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل کاسه پراید",machine:"دریل هکرت 2",code:"DR02",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل 405",machine:"دریل سابو",code:"DR10",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل 405",machine:"دریل رادیال 4",code:"DR08",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل دیسک پراید",machine:"دریل هکرت 3",code:"DR03",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل دیسک پراید",machine:"دریل رادیال 5",code:"DR09",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل متفرقه",machine:"دریل هکرت 4",code:"DR04",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل متفرقه",machine:"دریل رادیال 5",code:"DR09",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل دیسک پیکان",machine:"دریل ستونی",code:"DR11",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط دریل دیسک پیکان",machine:"دریل رادیال 5",code:"DR09",ops:["OP 30","OP 40","OP 50"]},
+  {line:"خط بالانس",machine:"بالانس 1",code:"BL01",ops:["OP 50","OP 60"]},
+  {line:"خط بالانس",machine:"بالانس 2",code:"BL02",ops:["OP 50","OP 60"]},
+  {line:"خط بالانس",machine:"سنگ بالانس",code:"SN01",ops:["OP 50","OP 60"]},
+  {line:"خط بالانس",machine:"فرز روسی",code:"FR02",ops:["OP 50","OP 60"]},
+  {line:"خط شابر",machine:"شابر 1",code:"SB01",ops:["OP 60","OP 70"]},
+  {line:"خط شابر",machine:"شابر 2",code:"SB02",ops:["OP 60","OP 70"]},
+  {line:"خط شستشو و رنگ",machine:"شستشو",code:"SH01",ops:["OP 70","OP 80"]},
+  {line:"خط شستشو و رنگ",machine:"رنگ",code:"CB01",ops:["OP 70","OP 80"]},
+  {line:"خط خشن تراش بوش XU7",machine:"رایدر 1",code:"RD01",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"رایدر 2",code:"RD02",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"رایدر 3",code:"RD03",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"تنظیم کار رایدر",code:"—",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"KD2 D",code:"DT04",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"ویلر",code:"CN16",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"KD2 B",code:"DT02",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"C39 A",code:"CN14",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"KD2 C",code:"DT03",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"KD2 E",code:"DT05",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"KD2 A",code:"DT01",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط خشن تراش بوش XU7",machine:"C39 B",code:"CN15",ops:["OP 05A","OP 05B","OP 10A","OP 10B"]},
+  {line:"خط سرسیلندر",machine:"فرز 1",code:"FS01",ops:["OP 10","OP 20"]},
+  {line:"خط سرسیلندر",machine:"فرز 2",code:"FS02",ops:["OP 10","OP 20"]},
+  {line:"خط سرسیلندر",machine:"فرز 3",code:"FS03",ops:["OP 10","OP 20"]}
+];
+const TOTAL = allRows.length; // 52
+
+// ═══════════════ STATE ═══════════════
+let currentIdx = 0;     // which row we're filling
+let tableData  = [];    // saved entries
+let saveTimer  = null;
+const SAVE_KEY = 'pngj_form_v3';
+
+// ═══════════════ INIT ═══════════════
+function init() {
+  // fill product datalist
+  const pdl = document.getElementById('product-dl');
+  pdl.innerHTML = products.map(p=>`<option value="${p.name}">`).join('');
+  // fill operator datalist
+  const odl = document.getElementById('op-dl');
+  odl.innerHTML = operators.map(o=>`<option value="${o}">`).join('');
+  // fill stop-desc datalist with all items initially
+  const sddl = document.getElementById('stop-desc-dl');
+  if (sddl) sddl.innerHTML = Object.values(stopGroups).flat().map(i=>`<option value="${i}">`).join('');
+  // absentees list
+  refreshAbsentList();
+  // fill line select
+  refreshLineOptions();
+  // listeners for auto-save
+  ['day','month','year','weekday','shift_master','shift_time'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ el.addEventListener('change',scheduleSave); el.addEventListener('input',()=>{ updateMasterName(); scheduleSave(); }); }
+  });
+  // restore or start fresh
+  restoreData();
+  renderEntryCard();
+  renderTable();
+  updateProgress();
+}
+
+function updateMasterName(){
+  const v=document.getElementById('shift_master').value;
+  document.getElementById('masterNameDisplay').textContent=v||'_____________';
+}
+
+// ═══════════════ ENTRY CARD ═══════════════
+function renderEntryCard() {
+  if (currentIdx >= TOTAL) {
+    document.getElementById('entryCard').style.display='none';
+    return;
+  }
+  // Refresh dropdowns to exclude already-recorded line/machine combos
+  refreshLineOptions();
+  const lineSel = document.getElementById('e_line');
+  if (!lineSel.value) {
+    // all line/machine combos recorded
+    document.getElementById('entryCard').style.display='none';
+    return;
+  }
+  document.getElementById('entryCard').style.display='';
+  document.getElementById('rowBadge').textContent = `ردیف ${currentIdx+1} از ${TOTAL}`;
+  document.getElementById('entryMsg').textContent  = '';
+
+  populateMachineSelect(lineSel.value, null);
+  onMachineChange();
+
+  // Clear editable fields
+  document.getElementById('e_product').value   = '';
+  document.getElementById('e_operator').value  = '';
+  document.getElementById('e_stop_group').value = '';
+  document.getElementById('e_stop_desc').value  = '';
+  clearStopTags();
+  document.getElementById('e_pcode').value     = '';
+  document.getElementById('e_pcode').value     = '';
+  document.getElementById('e_tracking').value  = '';
+  document.getElementById('e_qty').value       = '';
+  document.getElementById('e_downtime').value  = '';
+  document.getElementById('e_reason').value    = '';
+  document.getElementById('e_pal_start').value = '';
+  document.getElementById('e_pal_end').value   = '';
+  document.getElementById('e_stopped').checked = false;
+  onStoppedChange();
+}
+
+function getRecordedKeys() {
+  // Set of "line|machine" already recorded in the table
+  return new Set(tableData.map(d=>`${d.line}|${d.machine}`));
+}
+
+function refreshLineOptions() {
+  const lineSelect = document.getElementById('e_line');
+  const prevValue = lineSelect.value;
+  const recorded = getRecordedKeys();
+  const uniqueLines = [...new Set(allRows.map(r=>r.line))];
+  // a line is shown only if it still has at least one unrecorded machine
+  const availableLines = uniqueLines.filter(l =>
+    allRows.some(r => r.line===l && !recorded.has(`${r.line}|${r.machine}`))
+  );
+  lineSelect.innerHTML = availableLines.map(l=>`<option value="${l}">${l}</option>`).join('');
+  // try to keep previous selection if still available, else pick first available
+  if (availableLines.includes(prevValue)) {
+    lineSelect.value = prevValue;
+  } else if (availableLines.length>0) {
+    lineSelect.value = availableLines[0];
+  }
+}
+
+function populateMachineSelect(line, selectedMachine) {
+  const machineSel = document.getElementById('e_machine');
+  const recorded = getRecordedKeys();
+  let rowsForLine = allRows.filter(r => r.line === line && !recorded.has(`${r.line}|${r.machine}`));
+  // if the currently-selected machine was already recorded (e.g. editing), still show it so it's not lost
+  if (selectedMachine && !rowsForLine.some(r=>r.machine===selectedMachine)) {
+    const sel = allRows.find(r=>r.line===line && r.machine===selectedMachine);
+    if (sel) rowsForLine = [sel, ...rowsForLine];
+  }
+  if (rowsForLine.length===0) {
+    machineSel.innerHTML = '';
+    return;
+  }
+  const hasSelected = rowsForLine.some(r=>r.machine===selectedMachine);
+  machineSel.innerHTML = rowsForLine.map((r,idx)=>`<option value="${r.machine}" ${(r.machine===selectedMachine)||(!hasSelected&&idx===0)?'selected':''}>${r.machine}</option>`).join('');
+}
+
+function onLineChange() {
+  const selected = document.getElementById('e_line').value;
+  populateMachineSelect(selected, null);
+  onMachineChange();
+}
+
+function onMachineChange() {
+  const line = document.getElementById('e_line').value;
+  const machine = document.getElementById('e_machine').value;
+  const match = allRows.find(r => r.line===line && r.machine===machine);
+  if (match) {
+    document.getElementById('e_code').value = match.code;
+    const opSel = document.getElementById('e_op');
+    opSel.innerHTML = `<option value="">انتخاب</option>` + match.ops.map(o=>`<option>${o}</option>`).join('');
+  }
+}
+
+// ═══════════════ ABSENTEES MULTI-SELECT ═══════════════
+let absentList = [];
+
+function refreshAbsentList() {
+  const dl = document.getElementById('absent-list');
+  const available = operators.filter(o=>!absentList.includes(o));
+  dl.innerHTML = available.map(o=>`<option value="${o}">`).join('');
+  renderAbsentTags();
+}
+
+function renderAbsentTags() {
+  const wrap = document.getElementById('absentTags');
+  wrap.innerHTML = absentList.map(name=>`
+    <span class="absent-tag">${name}<button onclick="removeAbsent('${name.replace(/'/g,"\\'")}')" title="حذف">×</button></span>
+  `).join('');
+}
+
+function filterAbsentList() {
+  // datalist already filters by browser; nothing extra needed here
+}
+
+function addAbsent(name) {
+  name = name.trim();
+  if (!name) return;
+  if (!absentList.includes(name)) {
+    absentList.push(name);
+    refreshAbsentList();
+    scheduleSave();
+  }
+  document.getElementById('absent_input').value = '';
+}
+
+function removeAbsent(name) {
+  absentList = absentList.filter(n=>n!==name);
+  refreshAbsentList();
+  scheduleSave();
+}
+
+function onAbsentKeydown(e) {
+  if (e.key==='Enter' || e.key===',') {
+    e.preventDefault();
+    addAbsent(e.target.value);
+  }
+}
+
+function onProductInput() {
+  const val = document.getElementById('e_product').value.trim();
+  const match = products.find(p => p.name === val);
+  document.getElementById('e_pcode').value = match ? match.code : '';
+}
+
+// Multi-tag stop group/desc
+let selectedStopGroups = [];
+let selectedStopDescs  = [];
+
+function renderStopGroupTags() {
+  const wrap = document.getElementById('stopGroupTags');
+  if (!wrap) return;
+  wrap.innerHTML = selectedStopGroups.map(g=>
+    `<span class="stop-tag">${g}<button onclick="removeStopGroupTag('${g.replace(/'/g,"\'")}')">×</button></span>`
+  ).join('');
+}
+
+function renderStopDescTags() {
+  const wrap = document.getElementById('stopDescTags');
+  if (!wrap) return;
+  wrap.innerHTML = selectedStopDescs.map(d=>
+    `<span class="stop-tag">${d}<button onclick="removeStopDescTag('${d.replace(/'/g,"\'")}')">×</button></span>`
+  ).join('');
+}
+
+function addStopGroupTag() {
+  const inp = document.getElementById('e_stop_group');
+  const val = inp.value.trim();
+  if (!val) return;
+  if (!selectedStopGroups.includes(val)) {
+    selectedStopGroups.push(val);
+    renderStopGroupTags();
+  }
+  inp.value = '';
+  // update desc datalist based on all selected groups
+  onStopGroupInput();
+}
+
+function removeStopGroupTag(g) {
+  selectedStopGroups = selectedStopGroups.filter(x=>x!==g);
+  renderStopGroupTags();
+  onStopGroupInput();
+}
+
+function addStopDescTag() {
+  const inp = document.getElementById('e_stop_desc');
+  const val = inp.value.trim();
+  if (!val) return;
+  if (!selectedStopDescs.includes(val)) {
+    selectedStopDescs.push(val);
+    renderStopDescTags();
+  }
+  inp.value = '';
+}
+
+function removeStopDescTag(d) {
+  selectedStopDescs = selectedStopDescs.filter(x=>x!==d);
+  renderStopDescTags();
+}
+
+function onStopGroupInput() {
+  const group = document.getElementById('e_stop_group').value.trim();
+  const dl = document.getElementById('stop-desc-dl');
+  let pool = [];
+  // combine items from all selected groups + current typed group
+  const groups = [...selectedStopGroups, ...(stopGroups[group] ? [group] : [])];
+  if (groups.length > 0) {
+    groups.forEach(g => { if (stopGroups[g]) pool.push(...stopGroups[g]); });
+  }
+  if (pool.length === 0) {
+    // search across all
+    const q = group.toLowerCase();
+    Object.values(stopGroups).forEach(arr => arr.forEach(i => { if (!q || i.includes(q)) pool.push(i); }));
+  }
+  // remove already selected descs
+  pool = pool.filter(i => !selectedStopDescs.includes(i));
+  dl.innerHTML = [...new Set(pool)].map(i=>`<option value="${i}">`).join('');
+}
+
+function onStopDescInput() {
+  const desc = document.getElementById('e_stop_desc').value.trim().toLowerCase();
+  const dl = document.getElementById('stop-desc-dl');
+  let pool = [];
+  if (selectedStopGroups.length > 0) {
+    selectedStopGroups.forEach(g => { if (stopGroups[g]) pool.push(...stopGroups[g]); });
+  } else {
+    pool = Object.values(stopGroups).flat();
+  }
+  pool = pool.filter(i => !selectedStopDescs.includes(i) && (!desc || i.includes(desc)));
+  dl.innerHTML = [...new Set(pool)].map(i=>`<option value="${i}">`).join('');
+}
+
+function clearStopTags() {
+  selectedStopGroups = [];
+  selectedStopDescs  = [];
+  renderStopGroupTags();
+  renderStopDescTags();
+  const sddl = document.getElementById('stop-desc-dl');
+  if (sddl) sddl.innerHTML = Object.values(stopGroups).flat().map(i=>`<option value="${i}">`).join('');
+}
+
+function onStoppedChange() {
+  const stopped = document.getElementById('e_stopped').checked;
+  // production fields → disable when stopped
+  const prodIds = ['e_product','e_pcode','e_tracking','e_qty','e_pal_start','e_pal_end'];
+  prodIds.forEach(id=>{
+    const el = document.getElementById(id);
+    el.disabled = stopped;
+    if (stopped) el.value = '';
+  });
+  // downtime → disable when stopped (set to 0)
+  const dtEl = document.getElementById('e_downtime');
+  dtEl.disabled = stopped;
+  if (stopped) dtEl.value = '';
+  // stop group, stop desc, reason → ENABLE and required when stopped
+  ['e_stop_group','e_stop_desc','e_reason'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.disabled = false;
+    if (stopped) {
+      el.style.borderColor = '#e05050';
+      el.style.background  = '#fff5f5';
+    } else {
+      el.style.borderColor = '';
+      el.style.background  = '';
+    }
+  });
+  if (stopped) {
+    document.getElementById('e_stop_group').focus();
+  }
+}
+
+function addRow() {
+  const r = allRows[currentIdx];
+  const stopped  = document.getElementById('e_stopped').checked;
+  const op       = document.getElementById('e_op').value;
+  const product  = document.getElementById('e_product').value.trim();
+  const pcode    = document.getElementById('e_pcode').value;
+  const tracking = document.getElementById('e_tracking').value.trim();
+  const qty      = document.getElementById('e_qty').value;
+  const downtime = document.getElementById('e_downtime').value;
+  const reason     = document.getElementById('e_reason').value.trim();
+  // collect any pending typed value
+  const pendingGroup = document.getElementById('e_stop_group').value.trim();
+  const pendingDesc  = document.getElementById('e_stop_desc').value.trim();
+  const stopGroup  = [...selectedStopGroups, ...(pendingGroup && !selectedStopGroups.includes(pendingGroup) ? [pendingGroup] : [])].join('، ');
+  const stopDesc   = [...selectedStopDescs,  ...(pendingDesc  && !selectedStopDescs.includes(pendingDesc)   ? [pendingDesc]  : [])].join('، ');
+  const palStart = document.getElementById('e_pal_start').value;
+  const palEnd   = document.getElementById('e_pal_end').value;
+  const operator = document.getElementById('e_operator').value.trim();
+
+  if (stopped) {
+    if (stopped && selectedStopGroups.length===0 && !stopGroup) { setMsg('لطفاً گروه توقفات را مشخص کنید'); return; }
+    if (stopped && selectedStopDescs.length===0  && !stopDesc)  { setMsg('لطفاً شرح توقفات را مشخص کنید'); return; }
+    // علت توقف اختیاری است
+  } else {
+    if (!op)       { setMsg('لطفاً OP را انتخاب کنید'); return; }
+    if (tracking.length !== 7) { setMsg('کد شناسایی ردیابی باید دقیقاً ۷ کاراکتر باشد'); return; }
+  }
+
+  const selLine    = document.getElementById('e_line').value;
+  const selMachine = document.getElementById('e_machine').value;
+  const matchIdx = allRows.findIndex(r=>r.line===selLine && r.machine===selMachine);
+
+  tableData.push({
+    rowNum: tableData.length+1,
+    origIdx: matchIdx>=0 ? matchIdx : currentIdx,
+    line: selLine,
+    machine: selMachine,
+    code: document.getElementById('e_code').value,
+    op: stopped ? '—' : op,
+    operator: stopped ? '—' : operator,
+    product, pcode, tracking,
+    qty: stopped ? 0 : qty,
+    downtime: stopped ? 0 : downtime,
+    stopGroup: stopGroup,
+    stopDesc: stopDesc,
+    reason, palStart: stopped ? 0 : palStart, palEnd: stopped ? 0 : palEnd,
+    stopped
+  });
+  currentIdx++;
+  document.getElementById('e_stopped').checked = false;
+  onStoppedChange();
+  scheduleSave();
+  renderTable();
+  renderEntryCard();
+  updateProgress();
+  if (currentIdx < TOTAL) {
+    document.getElementById('entryCard').scrollIntoView({behavior:'smooth',block:'center'});
+  } else {
+    document.getElementById('resultBody').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function skipRow() {
+  if (currentIdx >= TOTAL) return;
+  currentIdx++;
+  scheduleSave();
+  renderEntryCard();
+  updateProgress();
+}
+
+function setMsg(m) { document.getElementById('entryMsg').textContent=m; }
+
+function getSortedData() {
+  return [...tableData].sort((a,b)=>(a.origIdx??0)-(b.origIdx??0));
+}
+
+// ═══════════════ TABLE RENDER ═══════════════
+let editingIdx = -1;
+
+function renderTable() {
+  const tbody = document.getElementById('resultBody');
+  if (tableData.length===0) {
+    tbody.innerHTML=`<tr><td colspan="17" style="text-align:center;padding:14px;color:#999">هنوز ردیفی ثبت نشده</td></tr>`;
+    document.getElementById('rowsCount').textContent='۰ ردیف ثبت شده';
+    return;
+  }
+  document.getElementById('rowsCount').textContent=`${tableData.length} ردیف ثبت شده`;
+  const sorted = getSortedData();
+  tbody.innerHTML = sorted.map((d,displayIdx)=>{
+    const i = tableData.indexOf(d); // real index in tableData for actions
+    if (i===editingIdx) return renderEditRow(d,i,displayIdx);
+    return `
+    <tr${d.stopped ? ' style="background:#fdecea"' : ''}>
+      <td style="text-align:center">${displayIdx+1}</td>
+      <td class="line-td">${d.line}${d.stopped ? ' <span style="color:#c0392b;font-size:10px">⛔ متوقف</span>' : ''}</td>
+      <td style="text-align:center">${d.op}</td>
+      <td style="text-align:center">${d.machine}</td>
+      <td style="text-align:center">${d.code}</td>
+      <td>${d.product}</td>
+      <td style="font-size:10px">${d.pcode}</td>
+      <td>${d.operator||''}</td>
+      <td style="text-align:center;font-family:monospace">${d.tracking}</td>
+      <td style="text-align:center">${d.qty}</td>
+      <td style="text-align:center">${d.downtime}</td>
+      <td style="text-align:center">${d.stopGroup||''}</td>
+      <td>${d.stopDesc||''}</td>
+      <td>${d.reason}</td>
+      <td style="text-align:center">${d.palStart}</td>
+      <td style="text-align:center">${d.palEnd}</td>
+      <td class="del-td"><button class="del-row-btn" onclick="editRow(${i})" title="ویرایش ردیف">✏️</button></td>
+      <td class="del-td">${i===pendingDeleteIdx
+        ? `<button class="del-row-btn" style="color:#e05050;font-size:10px;font-weight:700" onclick="deleteRow(${i})" title="تأیید حذف">حذف؟✔</button> <button class="del-row-btn" onclick="cancelDelete()" title="انصراف">✖</button>`
+        : `<button class="del-row-btn" onclick="deleteRow(${i})" title="حذف ردیف">🗑</button>`}</td>
+    </tr>`;
+  }).join('');
+}
+
+function cancelDelete(){
+  pendingDeleteIdx = -1;
+  renderTable();
+}
+
+function renderEditRow(d,i,displayIdx){
+  const lineOptions = [...new Set(allRows.map(r=>r.line))].map(l=>`<option ${l===d.line?'selected':''}>${l}</option>`).join('');
+  const opRow = allRows.find(r=>r.line===d.line) || {ops:[]};
+  const opOptions = opRow.ops.map(o=>`<option ${o===d.op?'selected':''}>${o}</option>`).join('');
+  return `
+    <tr style="background:#fff8f0">
+      <td style="text-align:center">${displayIdx+1}</td>
+      <td><select id="edit_line_${i}">${lineOptions}</select></td>
+      <td><select id="edit_op_${i}">${opOptions}</select></td>
+      <td><input id="edit_machine_${i}" value="${d.machine}" style="width:80px"></td>
+      <td><input id="edit_code_${i}" value="${d.code}" style="width:55px"></td>
+      <td><input list="product-dl" id="edit_product_${i}" value="${d.product}" style="width:160px" oninput="onEditProductInput(${i})"></td>
+      <td><input id="edit_pcode_${i}" value="${d.pcode}" style="width:110px" readonly></td>
+      <td><input list="op-dl" id="edit_operator_${i}" value="${d.operator||''}" style="width:100px" autocomplete="off"></td>
+      <td><input id="edit_tracking_${i}" value="${d.tracking}" style="width:75px" maxlength="7" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7)"></td>
+      <td><input id="edit_qty_${i}" type="number" value="${d.qty}" style="width:55px"></td>
+      <td><input id="edit_downtime_${i}" type="number" value="${d.downtime}" style="width:55px"></td>
+      <td><input list="stop-group-dl" id="edit_stopGroup_${i}" value="${d.stopGroup||''}" style="width:100px" autocomplete="off"></td>
+      <td><input list="stop-desc-dl" id="edit_stopDesc_${i}" value="${d.stopDesc||''}" style="width:130px" autocomplete="off"></td>
+      <td><textarea id="edit_reason_${i}" style="width:180px;min-height:32px">${d.reason}</textarea></td>
+      <td><input id="edit_palStart_${i}" type="number" value="${d.palStart}" style="width:50px"></td>
+      <td><input id="edit_palEnd_${i}" type="number" value="${d.palEnd}" style="width:50px"></td>
+      <td class="del-td"><button class="del-row-btn" onclick="saveEditRow(${i})" title="ذخیره">💾</button></td>
+      <td class="del-td"><button class="del-row-btn" onclick="cancelEditRow()" title="انصراف">✖</button></td>
+    </tr>`;
+}
+
+function editRow(i){
+  editingIdx = i;
+  pendingDeleteIdx = -1;
+  renderTable();
+}
+
+function cancelEditRow(){
+  editingIdx = -1;
+  renderTable();
+}
+
+function onEditProductInput(i){
+  const val = document.getElementById(`edit_product_${i}`).value.trim();
+  const match = products.find(p => p.name === val);
+  document.getElementById(`edit_pcode_${i}`).value = match ? match.code : '';
+}
+
+function saveEditRow(i){
+  const get = id=>document.getElementById(id).value;
+  const d = tableData[i];
+  const newTracking = get(`edit_tracking_${i}`).trim();
+  if (!d.stopped && newTracking.length !== 7) {
+    alert('کد شناسایی ردیابی باید دقیقاً ۷ کاراکتر باشد');
+    return;
+  }
+  d.line     = get(`edit_line_${i}`);
+  d.op       = get(`edit_op_${i}`);
+  d.machine  = get(`edit_machine_${i}`);
+  d.code     = get(`edit_code_${i}`);
+  d.product  = get(`edit_product_${i}`).trim();
+  d.pcode    = get(`edit_pcode_${i}`);
+  d.operator = get(`edit_operator_${i}`).trim();
+  d.tracking = newTracking;
+  d.qty      = get(`edit_qty_${i}`);
+  d.downtime = get(`edit_downtime_${i}`);
+  d.stopGroup = get(`edit_stopGroup_${i}`).trim();
+  d.stopDesc  = get(`edit_stopDesc_${i}`).trim();
+  d.reason   = get(`edit_reason_${i}`).trim();
+  d.palStart = get(`edit_palStart_${i}`);
+  d.palEnd   = get(`edit_palEnd_${i}`);
+  // Realign origIdx to the canonical position of this machine in allRows
+  const newOrigIdx = allRows.findIndex(r=>r.line===d.line && r.machine===d.machine);
+  if (newOrigIdx>=0) d.origIdx = newOrigIdx;
+  editingIdx = -1;
+  scheduleSave();
+  renderTable();
+  renderEntryCard();
+}
+
+let pendingDeleteIdx = -1;
+
+function deleteRow(i) {
+  if (pendingDeleteIdx !== i) {
+    pendingDeleteIdx = i;
+    renderTable();
+    return;
+  }
+  pendingDeleteIdx = -1;
+  tableData.splice(i,1);
+  tableData.forEach((d,j)=>d.rowNum=j+1);
+  scheduleSave();
+  renderTable();
+  renderEntryCard();
+}
+
+// ═══════════════ PROGRESS ═══════════════
+function updateProgress() {
+  const pct = Math.round((currentIdx/TOTAL)*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+}
+
+// ═══════════════ CONFIRM & EXPORT ═══════════════
+function onConfirmChange() {
+  const checked = document.getElementById('confirmCheck').checked;
+  document.getElementById('exportBtn').disabled = !checked;
+  document.getElementById('imgBtn').disabled    = !checked;
+  scheduleSave();
+}
+
+function validateFormNumber() {
+  const fn = document.getElementById('form_number')?.value.trim();
+  if (!fn) { alert('لطفاً شماره فرم را وارد کنید'); document.getElementById('form_number').focus(); return false; }
+  return true;
+}
+
+function exportToExcelGuarded() { if (validateFormNumber()) exportToExcel(); }
+function captureImageGuarded()  { if (validateFormNumber()) captureImage(); }
+
+const PERSIAN_MONTHS = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+
+function getYYMMDD() {
+  const v = id=>document.getElementById(id)?.value||'';
+  const year  = v('year');
+  const month = v('month');
+  const day   = v('day');
+  const yy = year.length===4 ? year.slice(2) : year;
+  const mmIdx = PERSIAN_MONTHS.indexOf(month);
+  const mm = mmIdx>=0 ? String(mmIdx+1).padStart(2,'0') : '00';
+  const dd = String(day).padStart(2,'0');
+  return `${yy}${mm}${dd}`;
+}
+
+function exportToExcel() {
+  const v = id=>document.getElementById(id)?.value||'';
+  const esc = c => '"'+(c||'').toString().replace(/"/g,'""')+'"';
+  let csv='\uFEFF';
+  // Header info rows - each field in its own cell
+  const months4csv=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  const mm4csv=String(months4csv.indexOf(v('month'))+1).padStart(2,'0');
+  const formattedDate=v('year')+'/'+mm4csv+'/'+String(v('day')).padStart(2,'0');
+  csv += esc('تاریخ')+','+esc(formattedDate)+',';
+  csv += esc('روز هفته')+','+esc(v('weekday'))+',';
+  csv += esc('سرشیفت')+','+esc(v('shift_master'))+',';
+  csv += esc('شیفت')+','+esc(v('shift_time'))+'\n';
+  csv += esc('شماره فرم')+','+esc(v('form_number'))+'\n';
+  csv += esc('مسئول نت')+','+esc(v('net_manager'))+',';
+  csv += esc('مسئول کیفیت')+','+esc(v('quality_manager'))+',';
+  csv += esc('مسئول خدمات')+','+esc(v('service_manager'))+'\n';
+  csv += esc('غایبین/مرخصی استحقاقی')+','+esc(absentList.join('، '))+'\n\n';
+  // Column headers - one column per field
+  const headers = ['ردیف','خط','OP','نام دستگاه','کد دستگاه','نام محصول',
+    'کد راهکاران','نام اپراتور','کد ردیابی','تعداد تولید',
+    'توقف(دقیقه)','گروه توقفات','شرح توقفات','علت توقف',
+    'شروع پالت','پایان پالت','وضعیت خط'];
+  csv += headers.map(esc).join(',')+'\n';
+  // Data rows
+  getSortedData().forEach((d,i)=>{
+    const row=[
+      i+1, d.line, d.op, d.machine, d.code,
+      d.product, d.pcode, d.operator||'', d.tracking,
+      d.qty, d.downtime,
+      d.stopGroup||'', d.stopDesc||'', d.reason,
+      d.palStart, d.palEnd,
+      d.stopped ? 'متوقف' : 'فعال'
+    ];
+    csv += row.map(esc).join(',')+'\n';
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url;
+  const shiftLetter=(v('shift_time')||'x').toLowerCase();
+  const fname=`${getYYMMDD()}-${shiftLetter}.csv`;
+  a.download=fname; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function captureImage() {
+  if (tableData.length===0) { alert('جدول خالی است'); return; }
+  if (typeof html2canvas === 'undefined') {
+    alert('کتابخانه html2canvas بارگذاری نشد. اتصال اینترنت را بررسی کنید.');
+    return;
+  }
+
+  const btn = document.getElementById('imgBtn');
+  btn.disabled = true;
+  setSaveDot('saving','در حال آماده‌سازی تصویر...');
+
+  const v = id=>document.getElementById(id)?.value||'';
+
+  // ساخت یک div موقت برای capture که شامل اطلاعات هدر + فوتر + جدول باشد
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;top:-9999px;left:-9999px;background:#fff;padding:16px;font-family:Tahoma,sans-serif;font-size:12px;color:#222;direction:rtl;min-width:1200px';
+
+  const logoSrc = document.querySelector('#tab1 .header-logo img')?.src || '';
+  const formNum = v('form_number');
+
+  // عنوان و مشخصات
+  wrap.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;border:2px solid #0d9d91;margin-bottom:10px">
+      <tr>
+        <td style="width:120px;text-align:center;border:1px solid #0d9d91;padding:6px"><img src="${logoSrc}" style="max-width:110px;max-height:65px"></td>
+        <td style="text-align:center;background:#0d9d91;color:#fff;font-size:15px;font-weight:700;padding:14px;border:1px solid #0d9d91">فرم گزارش روزانه تولید</td>
+        <td style="width:110px;text-align:center;border:1px solid #0d9d91;padding:6px;font-size:10px;font-weight:600;color:#333">کد مدرک:<br>PR-FR-03/01${formNum ? '<br><span style=\'color:#0a7a6e\'>شماره: '+formNum+'</span>' : ''}</td>
+      </tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:8px;font-size:11px">
+      <tr>
+        <td style="padding:3px 8px"><b>تاریخ:</b> ${(()=>{const months=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];const mm=String(months.indexOf(v('month'))+1).padStart(2,'0');const dd=String(v('day')).padStart(2,'0');return v('year')+'/'+mm+'/'+dd;})()}</td>
+        <td style="padding:3px 8px"><b>روز هفته:</b> ${v('weekday')}</td>
+        <td style="padding:3px 8px"><b>سرشیفت:</b> ${v('shift_master')}</td>
+        <td style="padding:3px 8px"><b>شیفت:</b> ${v('shift_time')}</td>
+      </tr>
+      <tr>
+        <td style="padding:3px 8px"><b>مسئول نت:</b> ${v('net_manager')}</td>
+        <td style="padding:3px 8px"><b>مسئول کیفیت:</b> ${v('quality_manager')}</td>
+        <td style="padding:3px 8px"><b>مسئول خدمات:</b> ${v('service_manager')}</td>
+        <td style="padding:3px 8px"><b>غایبین:</b> ${absentList.length? absentList.join('، ') : '—'}</td>
+      </tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead>
+        <tr style="background:#0d9d91;color:#fff">
+          <th style="border:1px solid #ccc;padding:5px 6px">#</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">خط</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">OP</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">نام دستگاه</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">کد دستگاه</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">نام محصول</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">کد راهکاران</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">نام اپراتور</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">کد ردیابی</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">تولید</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">توقف(دقیقه)</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">گروه توقفات</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">شرح توقفات</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">علت توقف</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">شروع پالت</th>
+          <th style="border:1px solid #ccc;padding:5px 6px">پایان پالت</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${getSortedData().map((d,i)=>`
+          <tr style="${d.stopped?'background:#fdecea':i%2?'background:#f7fbfa':'background:#fff'}">
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${i+1}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.line}${d.stopped?' ⛔':''}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.op}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.machine}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.code}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px">${d.product}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.pcode}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px">${d.operator||''}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.tracking}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.qty}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.downtime}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.stopGroup||''}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px">${d.stopDesc||''}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px">${d.reason}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.palStart}</td>
+            <td style="border:1px solid #ccc;padding:4px 6px;text-align:center">${d.palEnd}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:10px;color:#666;text-align:left">© 2026 Abbas Sadeghi</div>
+  `;
+  document.body.appendChild(wrap);
+
+  const fname = `${getYYMMDD()}-${(v('shift_time')||'x').toLowerCase()}.jpg`;
+
+  html2canvas(wrap, {scale:2, backgroundColor:'#ffffff', useCORS:true}).then(canvas=>{
+    document.body.removeChild(wrap);
+    const jpegUrl = canvas.toDataURL('image/jpeg', 0.95);
+    const a = document.createElement('a');
+    a.href = jpegUrl;
+    a.download = fname;
+    a.click();
+    setSaveDot('saved','تصویر با موفقیت ذخیره شد 🖼️');
+    btn.disabled = false;
+  }).catch(err=>{
+    document.body.removeChild(wrap);
+    console.error(err);
+    setSaveDot('error','خطا در ساخت تصویر');
+    btn.disabled = false;
+  });
+}
+
+// ═══════════════ AUTO-SAVE ═══════════════
+function scheduleSave() {
+  setSaveDot('saving','در حال ذخیره...');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(doSave,700);
+}
+
+function doSave() {
+  try {
+    const state={
+      currentIdx,tableData,
+      day:document.getElementById('day')?.value,
+      month:document.getElementById('month')?.value,
+      year:document.getElementById('year')?.value,
+      weekday:document.getElementById('weekday')?.value,
+      shift_master:document.getElementById('shift_master')?.value,
+      shift_time:document.getElementById('shift_time')?.value,
+      net_manager:document.getElementById('net_manager')?.value,
+      quality_manager:document.getElementById('quality_manager')?.value,
+      service_manager:document.getElementById('service_manager')?.value,
+      absentList: absentList,
+      form_number:document.getElementById('form_number')?.value,
+      confirmed:document.getElementById('confirmCheck')?.checked,
+      savedAt:new Date().toLocaleTimeString('fa-IR')
+    };
+    localStorage.setItem(SAVE_KEY,JSON.stringify(state));
+    setSaveDot('saved','ذخیره شد ✓  '+state.savedAt);
+  } catch(e){ setSaveDot('error','خطا در ذخیره!'); }
+}
+
+function restoreData() {
+  try {
+    const raw=localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+    const s=JSON.parse(raw);
+    currentIdx  = s.currentIdx  || 0;
+    tableData   = s.tableData   || [];
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el&&v!==undefined) el.value=v; };
+    set('day',s.day); set('month',s.month); set('year',s.year);
+    set('weekday',s.weekday); set('shift_master',s.shift_master);
+    set('shift_time',s.shift_time); set('net_manager',s.net_manager);
+    set('quality_manager',s.quality_manager);
+    set('service_manager',s.service_manager);
+    absentList = Array.isArray(s.absentList) ? s.absentList : [];
+    refreshAbsentList();
+    set('form_number',s.form_number);
+    if(s.confirmed){ document.getElementById('confirmCheck').checked=true; document.getElementById('exportBtn').disabled=false; document.getElementById('imgBtn').disabled=false; }
+    updateMasterName();
+    setSaveDot('saved','بازیابی شد ✓  ('+s.savedAt+')');
+  } catch(e){ setSaveDot('error','خطا در بازیابی'); }
+}
+
+function clearAll() {
+  if (!confirm('تمام اطلاعات پاک شود؟ این عمل قابل بازگشت نیست.')) return;
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+}
+
+function setSaveDot(state,msg){
+  const dot=document.getElementById('saveDot');
+  const txt=document.getElementById('saveStatus');
+  if(dot){ dot.className='save-dot '+state; }
+  if(txt) txt.textContent=msg;
+}
+
+// Auto-save every 90s backup
+setInterval(doSave,90000);
+
+// Start
+init();
+</script>
+<script>
+const LOGBOOK_KEY = 'pngj_logbook_v1';
+
+let LB_logData  = [];
+let LB_saveTimer = null;
+let LB_editingIdx = -1;
+let LB_pendingDelete = -1;
+
+// ─── MACHINE LIST (same as allRows in form1) ─────────────
+// Uses allRows defined in form1 script (when combined)
+// Standalone fallback:
+
+
+// ─── INIT ────────────────────────────────────────────────
+
+// ─── LOGBOOK STOP TAGS ───────────────────────────────────
+let LB_stopGroups = [];
+let LB_stopDescs  = [];
+
+function lb_renderStopGroupTags() {
+  const wrap = document.getElementById('lb_stopGroupTags');
+  if (!wrap) return;
+  wrap.innerHTML = LB_stopGroups.map(g=>
+    `<span class="stop-tag">${g}<button onclick="lb_removeStopGroupTag('${g.replace(/'/g,"\'")}')">×</button></span>`
+  ).join('');
+}
+function lb_renderStopDescTags() {
+  const wrap = document.getElementById('lb_stopDescTags');
+  if (!wrap) return;
+  wrap.innerHTML = LB_stopDescs.map(d=>
+    `<span class="stop-tag">${d}<button onclick="lb_removeStopDescTag('${d.replace(/'/g,"\'")}')">×</button></span>`
+  ).join('');
+}
+function lb_addStopGroupTag() {
+  const inp = document.getElementById('lb_stop_group_inp');
+  const val = inp.value.trim();
+  if (val && !LB_stopGroups.includes(val)) { LB_stopGroups.push(val); lb_renderStopGroupTags(); }
+  inp.value = '';
+  lb_onStopGroupInput();
+}
+function lb_removeStopGroupTag(g) {
+  LB_stopGroups = LB_stopGroups.filter(x=>x!==g);
+  lb_renderStopGroupTags();
+  lb_onStopGroupInput();
+}
+function lb_addStopDescTag() {
+  const inp = document.getElementById('lb_stop_desc_inp');
+  const val = inp.value.trim();
+  if (val && !LB_stopDescs.includes(val)) { LB_stopDescs.push(val); lb_renderStopDescTags(); }
+  inp.value = '';
+}
+function lb_removeStopDescTag(d) {
+  LB_stopDescs = LB_stopDescs.filter(x=>x!==d);
+  lb_renderStopDescTags();
+}
+function lb_onStopGroupInput() {
+  const group = document.getElementById('lb_stop_group_inp').value.trim();
+  const dl = document.getElementById('stop-desc-dl');
+  if (!dl) return;
+  let pool = [];
+  const groups = [...LB_stopGroups, ...(stopGroups[group] ? [group] : [])];
+  if (groups.length > 0) groups.forEach(g => { if (stopGroups[g]) pool.push(...stopGroups[g]); });
+  if (pool.length === 0) { const q = group.toLowerCase(); Object.values(stopGroups).forEach(arr => arr.forEach(i => { if (!q || i.includes(q)) pool.push(i); })); }
+  pool = pool.filter(i => !LB_stopDescs.includes(i));
+  dl.innerHTML = [...new Set(pool)].map(i=>`<option value="${i}">`).join('');
+}
+function lb_onStopDescInput() {
+  const desc = document.getElementById('lb_stop_desc_inp').value.trim().toLowerCase();
+  const dl = document.getElementById('stop-desc-dl');
+  if (!dl) return;
+  let pool = LB_stopGroups.length > 0 ? LB_stopGroups.flatMap(g => stopGroups[g]||[]) : Object.values(stopGroups).flat();
+  pool = pool.filter(i => !LB_stopDescs.includes(i) && (!desc || i.includes(desc)));
+  dl.innerHTML = [...new Set(pool)].map(i=>`<option value="${i}">`).join('');
+}
+function lb_clearStopTags() {
+  LB_stopGroups = []; LB_stopDescs = [];
+  lb_renderStopGroupTags(); lb_renderStopDescTags();
+}
+
+
+// ─── REFRESH FROM FORM1 ──────────────────────────────────
+function lb_refreshFromForm1() {
+  try {
+    // Force save form1 first to ensure latest data
+    if (typeof doSave === 'function') doSave();
+
+    const key = typeof SAVE_KEY !== 'undefined' ? SAVE_KEY : 'pngj_form_v3';
+    const raw = localStorage.getItem(key);
+    if (!raw) { lb_setSaveDot('error', 'اطلاعات فرم اول یافت نشد'); return; }
+    const s = JSON.parse(raw);
+
+    // Update header info fields
+    const months = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+    const mm = String(months.indexOf(s.month)+1).padStart(2,'0');
+    const dd = String(s.day||'').padStart(2,'0');
+    const date = (s.year && mm!=='00' && dd) ? `${s.year}/${mm}/${dd}` : '—';
+    document.getElementById('ib_date').textContent    = date;
+    document.getElementById('ib_weekday').textContent = s.weekday || '—';
+    document.getElementById('ib_shift').textContent   = s.shift_time || '—';
+    document.getElementById('ib_master').textContent  = s.shift_master || '—';
+
+    const stoppedRows = (s.tableData || []).filter(d =>
+      d.stopped && (d.stopGroup || d.stopDesc || d.reason)
+    );
+
+    let addedCount = 0;
+    let updatedCount = 0;
+    let removedCount = 0;
+
+    // Step 1: Add or update rows from form1
+    stoppedRows.forEach(d => {
+      const existingIdx = LB_logData.findIndex(r =>
+        r.machine === d.machine &&
+        r.stopGroup === (d.stopGroup||'') &&
+        r.stopDesc  === (d.stopDesc||'')
+      );
+
+      if (existingIdx === -1) {
+        // New row — add it
+        LB_logData.push({
+          machine:     d.machine || '',
+          code:        d.code    || '',
+          stopGroup:   d.stopGroup || '',
+          stopDesc:    d.stopDesc  || '',
+          subject:     d.reason    || '',
+          origIdx:     typeof d.origIdx === 'number' ? d.origIdx : 9999,
+          corr:        false,
+          prev:        false,
+          actionDesc:  '',
+          controls:    '',
+          responsible: ''
+        });
+        addedCount++;
+      } else {
+        // Existing row — update only the source fields (not user-edited fields)
+        const existing = LB_logData[existingIdx];
+        existing.machine   = d.machine   || existing.machine;
+        existing.code      = d.code      || existing.code;
+        existing.stopGroup = d.stopGroup || existing.stopGroup;
+        existing.stopDesc  = d.stopDesc  || existing.stopDesc;
+        existing.subject   = d.reason    || existing.subject;
+        existing.origIdx   = typeof d.origIdx === 'number' ? d.origIdx : existing.origIdx;
+        updatedCount++;
+      }
+    });
+
+    // Step 2: Remove logbook rows whose source no longer exists in form1 stopped rows
+    // (only remove rows that have empty user-edited fields — don't remove if user added data)
+    const beforeLen = LB_logData.length;
+    LB_logData = LB_logData.filter(r => {
+      const stillExists = stoppedRows.some(d =>
+        d.machine === r.machine &&
+        (d.stopGroup||'') === r.stopGroup &&
+        (d.stopDesc||'')  === r.stopDesc
+      );
+      // Keep if still exists in form1, OR if user has added their own data
+      const hasUserData = r.corr || r.prev || r.actionDesc || r.controls || r.responsible;
+      return stillExists || hasUserData;
+    });
+    removedCount = beforeLen - LB_logData.length;
+
+    lb_renderTable();
+    lb_scheduleSave();
+
+    const msg = `به‌روز شد ✓ (${addedCount} جدید، ${updatedCount} ویرایش، ${removedCount} حذف)`;
+    lb_setSaveDot('saved', msg);
+  } catch(e) {
+    console.error('lb_refreshFromForm1 error:', e);
+    lb_setSaveDot('error', 'خطا در به‌روزرسانی');
+  }
+}
+
+function lb_init() {
+  lb_loadForm1Data();
+  lb_restoreLogbook();
+  lb_renderTable();
+}
+
+function lb_populateMachineSelect() {
+  const sel = document.getElementById('lb_machine');
+  if (!sel) return;
+  sel.innerHTML = allRows.map(r=>`<option value="${r.machine}">${r.machine}</option>`).join('');
+  lb_onMachineChange();
+}
+
+function lb_onMachineChange() {
+  const machineEl = document.getElementById('lb_machine');
+  if (!machineEl) return;
+  const r = allRows.find(r=>r.machine===machineEl.value);
+  const codeEl = document.getElementById('lb_code');
+  if (codeEl) codeEl.value = r ? r.code : '';
+}
+
+function lb_loadForm1Data() {
+  try {
+    const key = typeof SAVE_KEY !== 'undefined' ? SAVE_KEY : 'pngj_form_v3';
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    const months = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+    const mm = String(months.indexOf(s.month)+1).padStart(2,'0');
+    const dd = String(s.day||'').padStart(2,'0');
+    const date = (s.year && mm!=='00' && dd) ? `${s.year}/${mm}/${dd}` : '—';
+    document.getElementById('ib_date').textContent    = date;
+    document.getElementById('ib_weekday').textContent = s.weekday || '—';
+    document.getElementById('ib_shift').textContent   = s.shift_time || '—';
+    document.getElementById('ib_master').textContent  = s.shift_master || '—';
+
+    // Auto-import stopped rows from form1 into logbook
+    const stoppedRows = (s.tableData || []).filter(d => d.stopped && (d.stopGroup || d.stopDesc || d.reason));
+    if (stoppedRows.length === 0) return;
+
+    // Only import rows not already imported (match by machine+stopGroup+stopDesc+reason)
+    stoppedRows.forEach(d => {
+      const alreadyExists = LB_logData.some(r =>
+        r.machine === d.machine &&
+        r.stopGroup === (d.stopGroup||'') &&
+        r.stopDesc  === (d.stopDesc||'') &&
+        r.subject   === (d.reason||'')
+      );
+      if (!alreadyExists) {
+        LB_logData.push({
+          machine:     d.machine || '',
+          code:        d.code    || '',
+          stopGroup:   d.stopGroup || '',
+          stopDesc:    d.stopDesc  || '',
+          subject:     d.reason    || '',
+          origIdx:     typeof d.origIdx === 'number' ? d.origIdx : 9999,
+          corr:        false,
+          prev:        false,
+          actionDesc:  '',
+          controls:    '',
+          responsible: ''
+        });
+      }
+    });
+    lb_renderTable();
+    lb_scheduleSave();
+  } catch(e){ console.error('lb_loadForm1Data error:', e); }
+}
+
+function lb_restoreLogbook() {
+  try {
+    const raw = localStorage.getItem(LOGBOOK_KEY);
+    if (!raw) { lb_setSaveDot('saved','آماده'); return; }
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) { LB_logData = parsed; } else { LB_logData = parsed.data || []; const fn = document.getElementById('lb_form_number'); if(fn && parsed.formNumber) fn.value = parsed.formNumber; }
+    lb_setSaveDot('saved','بازیابی شد ✓');
+  } catch(e) { lb_setSaveDot('error','خطا در بازیابی'); }
+}
+
+function lb_saveLogbook() {
+  try {
+    const lb_fn = document.getElementById('lb_form_number')?.value||'';
+    localStorage.setItem(LOGBOOK_KEY, JSON.stringify({data: LB_logData, formNumber: lb_fn}));
+    lb_setSaveDot('saved','ذخیره شد ✓');
+  } catch(e) { lb_setSaveDot('error','خطا در ذخیره'); }
+}
+
+function lb_scheduleSave() {
+  lb_setSaveDot('saving','در حال ذخیره...');
+  clearTimeout(LB_saveTimer);
+  LB_saveTimer = setTimeout(lb_saveLogbook, 700);
+}
+
+function lb_setSaveDot(state, msg) {
+  const dot = document.getElementById('lb_saveDot');
+  const txt = document.getElementById('lb_saveStatus');
+  if (dot) dot.className = 'save-dot ' + state;
+  if (txt) txt.textContent = msg;
+}
+
+function lb_clearAll() {
+  if (!confirm('همه ردیف‌ها پاک شوند؟')) return;
+  LB_logData = [];
+  localStorage.removeItem(LOGBOOK_KEY);
+  lb_renderTable();
+  lb_setSaveDot('saved','پاک شد');
+}
+
+// ─── ENTRY FORM ──────────────────────────────────────────
+function lb_addRow() {
+  const machineEl = document.getElementById('lb_machine'); const machine = machineEl ? machineEl.value : '';
+  const code     = document.getElementById('lb_code').value;
+  const pendingLBGroup = document.getElementById('lb_stop_group_inp')?.value.trim()||'';
+  const pendingLBDesc  = document.getElementById('lb_stop_desc_inp')?.value.trim()||'';
+  const stopGroupVal = [...LB_stopGroups, ...(pendingLBGroup && !LB_stopGroups.includes(pendingLBGroup)?[pendingLBGroup]:[])].join('، ');
+  const stopDescVal  = [...LB_stopDescs,  ...(pendingLBDesc  && !LB_stopDescs.includes(pendingLBDesc)  ?[pendingLBDesc]: [])].join('، ');
+  const subject  = document.getElementById('lb_subject').value.trim();
+  const corr     = document.getElementById('lb_corr').checked;
+  const prev     = document.getElementById('lb_prev').checked;
+  const actionDesc = document.getElementById('lb_actionDesc').value.trim();
+  const controls = document.getElementById('lb_controls').value.trim();
+  const responsible = document.getElementById('lb_responsible').value.trim();
+
+  // Entry card removed - validation skipped
+  if (!corr && !prev) { msg.textContent = 'لطفاً حداقل یک نوع اقدام انتخاب کنید'; return; }
+  msg.textContent = '';
+
+  LB_logData.push({ machine, code, stopGroup: stopGroupVal, stopDesc: stopDescVal, subject, corr, prev, actionDesc, controls, responsible });
+  lb_clearEntryForm();
+  lb_scheduleSave();
+  lb_renderTable();
+  document.getElementById('lb_logTable').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function lb_clearEntryForm() {
+  // Entry card removed - nothing to clear
+}
+
+// ─── DELETE ──────────────────────────────────────────────
+function lb_deleteRow(i) {
+  if (LB_pendingDelete !== i) { LB_pendingDelete = i; lb_renderTable(); return; }
+  LB_pendingDelete = -1;
+  LB_logData.splice(i, 1);
+  lb_scheduleSave();
+  lb_renderTable();
+}
+
+function lb_cancelDelete() { LB_pendingDelete = -1; lb_renderTable(); }
+
+// ─── EDIT ────────────────────────────────────────────────
+function lb_editRow(i) {
+  LB_editingIdx = i;
+  LB_pendingDelete = -1;
+  lb_renderTable();
+}
+
+function lb_cancelEdit() { LB_editingIdx = -1; lb_renderTable(); }
+
+function lb_saveEdit(i) {
+  const get = id => { const el=document.getElementById(id); return el?el.value:''; };
+  const getChk = id => { const el=document.getElementById(id); return el?el.checked:false; };
+  const d = LB_logData[i];
+  // machine, code, stopGroup, stopDesc, subject are read-only — keep as-is
+  d.corr        = getChk(`lbe_corr_${i}`);
+  d.prev        = getChk(`lbe_prev_${i}`);
+  d.actionDesc  = get(`lbe_actionDesc_${i}`);
+  d.controls    = get(`lbe_controls_${i}`);
+  d.responsible = get(`lbe_responsible_${i}`);
+  LB_editingIdx = -1;
+  lb_scheduleSave();
+  lb_renderTable();
+}
+
+function lb_onEditMachineChange(i) {
+  const machine = document.getElementById(`lbe_machine_${i}`).value;
+  const r = allRows.find(r=>r.machine===machine);
+  document.getElementById(`lbe_code_${i}`).value = r ? r.code : '';
+}
+
+// ─── RENDER TABLE ────────────────────────────────────────
+function lb_renderTable() {
+  const tbody = document.getElementById('lb_logBody');
+  document.getElementById('lb_rowsCount').textContent = LB_logData.length + ' ردیف ثبت شده';
+  // Sort by canonical machine order from allRows
+  LB_logData.sort((a,b)=>(a.origIdx??9999)-(b.origIdx??9999));
+  if (LB_logData.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;color:#999">هنوز ردیفی ثبت نشده</td></tr>`;
+    return;
+  }
+  const machineOpts = m => allRows.map(r=>`<option value="${r.machine}" ${r.machine===m?'selected':''}>${r.machine}</option>`).join('');
+  tbody.innerHTML = LB_logData.map((d,i) => {
+    if (i === LB_editingIdx) return `
+      <tr style="background:#fff8f0">
+        <td style="text-align:center">${i+1}</td>
+        <td style="text-align:center;background:#f0f0f0">${d.machine}</td>
+        <td style="text-align:center;background:#f0f0f0;color:#0a7a6e;font-weight:600">${d.code}</td>
+        <td style="text-align:center;background:#f0f0f0">${d.stopGroup||''}</td>
+        <td style="background:#f0f0f0">${d.stopDesc||''}</td>
+        <td style="background:#f0f0f0;white-space:pre-wrap;line-height:1.6">${d.subject}</td>
+        <td>
+          <label style="display:flex;align-items:center;gap:4px;margin-bottom:5px;font-size:11px"><input type="checkbox" id="lbe_corr_${i}" ${d.corr?'checked':''}> اصلاحی</label>
+          <label style="display:flex;align-items:center;gap:4px;margin-bottom:5px;font-size:11px"><input type="checkbox" id="lbe_prev_${i}" ${d.prev?'checked':''}> پیشگیرانه</label>
+          <textarea id="lbe_actionDesc_${i}" rows="3" style="width:100%;font-family:inherit;font-size:11px;border:1px solid #f9a84d;border-radius:4px;padding:3px 5px;resize:vertical">${d.actionDesc}</textarea>
+        </td>
+        <td><textarea id="lbe_controls_${i}" rows="4" style="width:100%;font-family:inherit;font-size:11px;border:1px solid #f9a84d;border-radius:4px;padding:3px 5px;resize:vertical">${d.controls}</textarea></td>
+        <td><input id="lbe_responsible_${i}" value="${d.responsible}" style="width:100%;font-family:inherit;font-size:11px;border:1px solid #f9a84d;border-radius:4px;padding:4px 5px"></td>
+        <td style="text-align:center;white-space:nowrap">
+          <button class="del-row-btn" onclick="lb_saveEdit(${i})" title="ذخیره">💾</button>
+          <button class="del-row-btn" onclick="lb_cancelEdit()" title="انصراف">✖</button>
+        </td>
+      </tr>`;
+    return `
+      <tr>
+        <td style="text-align:center;font-weight:700">${i+1}</td>
+        <td style="text-align:center">${d.machine}</td>
+        <td style="text-align:center;color:#0a7a6e;font-weight:600">${d.code}</td>
+        <td style="text-align:center">${d.stopGroup||''}</td>
+            <td>${d.stopDesc||''}</td>
+            <td style="white-space:pre-wrap;line-height:1.6">${d.subject}</td>
+        <td>
+          <div>${d.corr?'☑':'☐'} اصلاحی</div>
+          <div style="margin-bottom:4px">${d.prev?'☑':'☐'} پیشگیرانه</div>
+          <div style="font-size:10px;color:#555;white-space:pre-wrap;line-height:1.5">${d.actionDesc}</div>
+        </td>
+        <td style="white-space:pre-wrap;line-height:1.6">${d.controls}</td>
+        <td style="text-align:center">${d.responsible}</td>
+        <td style="text-align:center;white-space:nowrap">
+          <button class="del-row-btn" onclick="lb_editRow(${i})" title="ویرایش">✏️</button>
+          ${i===LB_pendingDelete
+            ? `<button class="del-row-btn" style="color:#e05050;font-size:10px;font-weight:700" onclick="lb_deleteRow(${i})">حذف؟✔</button><button class="del-row-btn" onclick="lb_cancelDelete()">✖</button>`
+            : `<button class="del-row-btn" onclick="lb_deleteRow(${i})" title="حذف">🗑</button>`}
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+// ─── CAPTURE IMAGE ───────────────────────────────────────
+function lb_captureImageGuarded() {
+  const fn = document.getElementById('lb_form_number')?.value.trim();
+  if (!fn) { alert('لطفاً شماره فرم را وارد کنید'); document.getElementById('lb_form_number').focus(); return; }
+  lb_captureImage();
+}
+
+function lb_captureImage() {
+  if (LB_logData.length === 0) { alert('جدولی برای ذخیره وجود ندارد'); return; }
+  if (typeof html2canvas === 'undefined') { alert('کتابخانه html2canvas بارگذاری نشد'); return; }
+
+  const date    = document.getElementById('ib_date').textContent;
+  const weekday = document.getElementById('ib_weekday').textContent;
+  const shift   = document.getElementById('ib_shift').textContent;
+  const master  = document.getElementById('ib_master').textContent;
+  const logo    = document.querySelector('.header-logo img')?.src || '';
+
+  const lbFormNum = document.getElementById('lb_form_number')?.value || '';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;top:-9999px;left:-9999px;background:#fff;padding:16px;font-family:Tahoma,Arial,sans-serif;font-size:11px;color:#222;direction:rtl;min-width:1400px';
+  wrap.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;border:2px solid #0d9d91;margin-bottom:10px">
+      <tr>
+        <td style="width:120px;text-align:center;border:1px solid #0d9d91;padding:6px"><img src="${logo}" style="max-width:100px;max-height:60px"></td>
+        <td style="text-align:center;background:#0d9d91;color:#fff;font-size:15px;font-weight:700;padding:14px;border:1px solid #0d9d91">کتابچه شیفت</td>
+        <td style="width:140px;text-align:center;border:1px solid #0d9d91;padding:6px;font-size:10px;font-weight:600;color:#333">
+          کد مدرک: PR-FR-07/00
+          ${lbFormNum ? '<br><span style="color:#0a7a6e">شماره فرم: '+lbFormNum+'</span>' : ''}
+        </td>
+      </tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;background:#edfbfa;border:1px solid #9ed8d4;margin-bottom:10px">
+      <tr>
+        <td style="padding:5px 10px;border:1px solid #9ed8d4"><b>تاریخ:</b> ${date}</td>
+        <td style="padding:5px 10px;border:1px solid #9ed8d4"><b>روز هفته:</b> ${weekday}</td>
+        <td style="padding:5px 10px;border:1px solid #9ed8d4"><b>شیفت:</b> ${shift}</td>
+        <td style="padding:5px 10px;border:1px solid #9ed8d4"><b>سرشیفت:</b> ${master}</td>
+      </tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;font-size:10px">
+      <thead>
+        <tr style="background:#0d9d91;color:#fff">
+          <th style="border:1px solid #0a7a6e;padding:5px;width:28px">#</th>
+          <th style="border:1px solid #0a7a6e;padding:5px;width:100px">نام دستگاه</th>
+          <th style="border:1px solid #0a7a6e;padding:5px;width:55px">کد دستگاه</th>
+          <th style="border:1px solid #0a7a6e;padding:5px;width:100px">گروه توقفات</th>
+          <th style="border:1px solid #0a7a6e;padding:5px">شرح توقفات</th>
+          <th style="border:1px solid #0a7a6e;padding:5px">علت توقف</th>
+          <th style="border:1px solid #0a7a6e;padding:5px;width:150px">نوع اقدام (تشریح)</th>
+          <th style="border:1px solid #0a7a6e;padding:5px">اقدامات کنترلی و اپراتوری</th>
+          <th style="border:1px solid #0a7a6e;padding:5px;width:110px">مسئول انتقال اطلاعات</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${[...LB_logData].sort((a,b)=>(a.origIdx??9999)-(b.origIdx??9999)).map((d,i)=>`
+          <tr style="${i%2?'background:#f7fffe':'background:#fff'}">
+            <td style="border:1px solid #ddd;padding:4px 5px;text-align:center;font-weight:700">${i+1}</td>
+            <td style="border:1px solid #ddd;padding:4px 5px;text-align:center">${d.machine||''}</td>
+            <td style="border:1px solid #ddd;padding:4px 5px;text-align:center;color:#0a7a6e;font-weight:600">${d.code||''}</td>
+            <td style="border:1px solid #ddd;padding:4px 5px;text-align:center">${d.stopGroup||''}</td>
+            <td style="border:1px solid #ddd;padding:4px 5px;white-space:pre-wrap;line-height:1.5">${d.stopDesc||''}</td>
+            <td style="border:1px solid #ddd;padding:4px 5px;white-space:pre-wrap;line-height:1.5">${d.subject||''}</td>
+            <td style="border:1px solid #ddd;padding:4px 5px">
+              <div style="margin-bottom:2px">${d.corr?'☑':'☐'} اصلاحی</div>
+              <div style="margin-bottom:4px">${d.prev?'☑':'☐'} پیشگیرانه</div>
+              <div style="font-size:9px;color:#444;white-space:pre-wrap;line-height:1.4">${d.actionDesc||''}</div>
+            </td>
+            <td style="border:1px solid #ddd;padding:4px 5px;white-space:pre-wrap;line-height:1.5">${d.controls||''}</td>
+            <td style="border:1px solid #ddd;padding:4px 5px;text-align:center">${d.responsible||''}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:10px;color:#888;text-align:left">© 2026 Abbas Sadeghi</div>
+  `;
+  document.body.appendChild(wrap);
+
+  let fname = 'logbook.jpg';
+  try {
+    const key = typeof SAVE_KEY !== 'undefined' ? SAVE_KEY : 'pngj_form_v3';
+    const s = JSON.parse(localStorage.getItem(key)||'{}');
+    const months = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+    const yy = (s.year||'').slice(2);
+    const mm = String(months.indexOf(s.month)+1).padStart(2,'0');
+    const dd = String(s.day||'').padStart(2,'0');
+    const sh = (s.shift_time||'x').toLowerCase();
+    fname = `${yy}${mm}${dd}-${sh}-logbook.jpg`;
+  } catch(e){}
+
+  lb_setSaveDot('saving','در حال آماده‌سازی تصویر...');
+  html2canvas(wrap, {scale:2, backgroundColor:'#ffffff', useCORS:true}).then(canvas=>{
+    document.body.removeChild(wrap);
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/jpeg', 0.95);
+    a.download = fname;
+    a.click();
+    lb_setSaveDot('saved','تصویر با موفقیت ذخیره شد 🖼️');
+  }).catch(err=>{
+    document.body.removeChild(wrap);
+    console.error(err);
+    lb_setSaveDot('error','خطا در ساخت تصویر');
+  });
+}
+
+setInterval(lb_saveLogbook, 90000);
+lb_init();
+</script>
+</body></html>
